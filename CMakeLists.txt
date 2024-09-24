@@ -7,11 +7,14 @@ set(CMAKE_CXX_STANDARD 17)
 find_package(SDL2 CONFIG REQUIRED)
 find_package(SDL2_image CONFIG REQUIRED)
 
-add_executable(stratego_cpp_cpp_davidszoki main.cpp
+add_executable(stratego_cpp_cpp_davidszoki
+        main.cpp
         UI/UI.h
         UI/UI.cpp
         UI/Texture.cpp
-        Units/Marshall.h)
+        Units/Marshal.h
+        Units/Unit.h
+        Units/Unit.cpp)
 
 # Link SDL2 and SDL2_image libraries
 target_link_libraries(stratego_cpp_cpp_davidszoki
