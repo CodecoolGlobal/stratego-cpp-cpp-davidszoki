@@ -12,10 +12,16 @@ add_executable(stratego_cpp_cpp_davidszoki
         UI/UI.h
         UI/UI.cpp
         UI/Texture.cpp
-        Units/Marshal.h
+        Units/SpecialUnit/Marshal.h
         Units/Unit.h
         Units/Unit.cpp
-        Units/Enum.h)
+        Units/Enum.h
+        Units/SpecialUnit/Flag.h
+        Units/SpecialUnit/Bomb.h
+        Units/SpecialUnit/Scout.h
+        Units/SpecialUnit/Spy.h
+        Units/SpecialUnit/Miner.h
+        Units/NonSpecailUnit.h)
 
 # Link SDL2 and SDL2_image libraries
 target_link_libraries(stratego_cpp_cpp_davidszoki
