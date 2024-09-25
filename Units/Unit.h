@@ -1,12 +1,5 @@
-#ifndef UNIT_H
-#define UNIT_H
-
-//Move to Game logic
-enum Ranks { Flag, Spy, Scout, Miner, Sergeant, Lieutenant, Captain, Major, Colonel, General, Marshal, Bomb };
-
-enum Players { Red, Blue, none };
-
-//End in here
+#pragma once
+#include "Enum.h"
 
 class Position {
     int x;
@@ -28,12 +21,11 @@ class Unit {
     Position position;
 
 public:
-    Unit(Ranks rank, Players player, Position position);
+    Unit(Ranks rank, Players player, Position position) : rank(rank), player(player), position(position) {};
 
     Players getPlayer() const { return player; }
     Position getPosition() const {return position;}
+
     void setPLayer(Players newPlayer) { player = newPlayer; }
     void setPosition(const Position &newPosition) { position = newPosition; }
 };
-
-#endif

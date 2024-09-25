@@ -1,12 +1,8 @@
-#ifndef MARSHALL_H
-#define MARSHALL_H
+#pragma once
 #include "Unit.h"
 
 class Marshal : public Unit {
-    int move = 1;
-
 public:
-    Marshal(): Unit(Ranks::Marshal, none, Position(0, 0)) {
+    Marshal(Players player, Position position) : Unit(Ranks::Marshal, player, position) {
     }
 };
-#endif //MARSHALL_H

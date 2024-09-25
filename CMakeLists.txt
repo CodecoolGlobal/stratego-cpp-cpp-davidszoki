@@ -14,7 +14,8 @@ add_executable(stratego_cpp_cpp_davidszoki
         UI/Texture.cpp
         Units/Marshal.h
         Units/Unit.h
-        Units/Unit.cpp)
+        Units/Unit.cpp
+        Units/Enum.h)
 
 # Link SDL2 and SDL2_image libraries
 target_link_libraries(stratego_cpp_cpp_davidszoki
