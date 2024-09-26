@@ -92,10 +92,10 @@ void UI::renderStart(std::string path) {
     renderTexture(strategoCover, strategoRect, 1220, 820, 0, 0);
 
     Texture playButton = loadTexture(path + "PlayButton.png");
-    renderTexture(playButton, playButtonRect, 200, 80, 560, 360);
+    renderTexture(playButton, playButtonRect, 200, 80, 530, 360);
 
     Texture quitButton = loadTexture(path + "QuitButton.png");
-    renderTexture(quitButton, quitButtonRect, 200, 80, 560, 470);
+    renderTexture(quitButton, quitButtonRect, 200, 80, 530, 470);
 }
 
 void UI::renderStartUnits(string path, vector<string> ranks, vector<string> players) {
