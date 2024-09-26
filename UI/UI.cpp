@@ -66,13 +66,19 @@ bool UI::initSDLImage() {
     return true;
 }
 
-void UI::renderBattlefield(SDL_Rect &rect, string path) {
+void UI::renderBattlefield(string path) {
     Texture battlefieldImg = loadTexture(path + "Battlefield.bmp");
-    rect.h = 800;
-    rect.w = 800;
-    rect.x = 10;
-    rect.y = 10;
-    battlefieldImg.render(renderer, &rect);
+    SDL_Rect battlefieldRect;
+
+    Texture logoImg = loadTexture(path + "StrategoLogo.png");
+    SDL_Rect logoRect;
+
+    Texture resetImg = loadTexture(path + "ResetButton.png");
+    SDL_Rect resetRect;
+
+    renderTexture(battlefieldImg, battlefieldRect, 800, 800, 10, 10);
+    renderTexture(logoImg, logoRect, 200, 80, 820, 0);
+    renderTexture(resetImg, resetRect, 100,80,1030,10);
 }
 
 void UI::renderStartUnits(vector<SDL_Rect> &rects, string path, vector<string> ranks, vector<string> players) {
