@@ -140,6 +140,14 @@ void UI::renderStartUnits(string path, vector<string> ranks, vector<string> play
     }
 }
 
+void UI::renderTexture(Texture &texture, SDL_Rect &rect, int width, int height, int x, int y) {
+    rect.h = height; // Set height
+    rect.w = width; // Set width
+    rect.x = x; // Set x position
+    rect.y = y; // Set y position
+    texture.render(renderer, &rect); // Render the texture
+}
+
 bool UI::handleEvent() {
     bool quit = false;
     SDL_Event e;
