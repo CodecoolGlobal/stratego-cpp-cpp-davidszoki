@@ -71,12 +71,16 @@ void UI::renderBattlefield(string path) {
     Texture logoImg = loadTexture(path + "StrategoLogo.png");
     SDL_Rect logoRect;
 
-    Texture resetImg = loadTexture(path + "ResetButton.png");
-    SDL_Rect resetRect;
+    Texture restartImg = loadTexture(path + "RestartButton.png");
+    SDL_Rect restartRect;
+
+    Texture nextImg = loadTexture(path + "NextButton.png");
+    SDL_Rect nextRect;
 
     renderTexture(battlefieldImg, battlefieldRect, 800, 800, 10, 10);
-    renderTexture(logoImg, logoRect, 200, 80, 820, 0);
-    renderTexture(resetImg, resetRect, 100,80,1030,10);
+    renderTexture(logoImg, logoRect, 250, 80, 820, 5);
+    renderTexture(restartImg, restartRect, 150,80,820,90);
+    renderTexture(nextImg, nextRect, 150,80,980,90);
 }
 
 void UI::renderStart(std::string path) {
