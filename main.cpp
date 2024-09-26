@@ -20,16 +20,15 @@ int main(int, char **) {
     UI ui;
     ui.init();
 
-    SDL_Rect battlefieldRect;
-    vector<SDL_Rect> unitRects;
 
     // Main loop
     while (!quit) {
         quit = ui.handleEvent();
         SDL_RenderClear(ui.getRenderer());
 
-        ui.renderBattlefield(battlefieldRect, path);
-        ui.renderStartUnits(unitRects, path, ranks, players);
+        //ui.renderBattlefield(path);
+        //ui.renderStartUnits(path, ranks, players);
+        ui.renderStart(path);
 
         SDL_RenderPresent(ui.getRenderer());
     }
