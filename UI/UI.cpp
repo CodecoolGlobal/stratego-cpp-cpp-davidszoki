@@ -92,18 +92,18 @@ void UI::renderStart(std::string path) {
     // Load and render the Play button
     Texture playButton = loadTexture(path + "PlayButton.png");
     SDL_Rect playButtonRect;
-    renderTexture(playButton, playButtonRect, 200, 160, 510, 360);
+    renderTexture(playButton, playButtonRect, 200, 80, 510, 360);
 
     // Load and render the Quit button
     Texture quitButton = loadTexture(path + "QuitButton.png");
     SDL_Rect quitButtonRect;
-    renderTexture(quitButton, quitButtonRect, 200, 160, 510, 470);
+    renderTexture(quitButton, quitButtonRect, 200, 80, 510, 470);
 }
 
 void UI::renderStartUnits(string path, vector<string> ranks, vector<string> players) {
     vector<SDL_Rect> unitRects;
     int xPos = 820;
-    int yPos = 80;
+    int yPos = 180;
 
     // Define the number of units (ranks.size() * players.size())
     int numUnits = ranks.size() * players.size();
