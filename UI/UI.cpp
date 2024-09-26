@@ -80,6 +80,23 @@ void UI::renderBattlefield(string path) {
 }
 
 void UI::renderStartUnits(vector<SDL_Rect> &rects, string path, vector<string> ranks, vector<string> players) {
+void UI::renderStart(std::string path) {
+    // Load and render the Stratego cover
+    Texture strategoCover = loadTexture(path + "StrategoCover.png");
+    SDL_Rect strategoRect;
+    renderTexture(strategoCover, strategoRect, 1220, 820, 0, 0);
+
+    // Load and render the Play button
+    Texture playButton = loadTexture(path + "PlayButton.png");
+    SDL_Rect playButtonRect;
+    renderTexture(playButton, playButtonRect, 200, 160, 510, 360);
+
+    // Load and render the Quit button
+    Texture quitButton = loadTexture(path + "QuitButton.png");
+    SDL_Rect quitButtonRect;
+    renderTexture(quitButton, quitButtonRect, 200, 160, 510, 470);
+}
+
     int xPos = 820;
     int yPos = 80;
 
