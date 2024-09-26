@@ -10,11 +10,14 @@ static auto path = (filesystem::current_path().parent_path() /= "Resources\\").u
 
 int main(int, char **) {
     vector<string> ranks = {
-        "Flag", "Spy", "Scout", "Miner", "Sergeant", "Lieutenant", "Captain", "Major", "Colonel", "General", "Marshal",
-        "Bomb", "Back"
+        "Flag", "Spy", "Scout", "Scout", "Scout", "Scout", "Scout", "Scout", "Scout", "Scout", "Miner", "Miner",
+        "Miner", "Miner", "Miner", "Sergeant", "Sergeant", "Sergeant", "Sergeant", "Lieutenant", "Lieutenant",
+        "Lieutenant", "Lieutenant", "Captain", "Captain", "Captain", "Captain", "Major", "Major", "Major", "Colonel",
+        "Colonel", "General", "Marshal",
+        "Bomb", "Bomb", "Bomb", "Bomb", "Bomb", "Bomb"
     };
 
-    vector<string> players = {"Red", "Blue"};
+    vector<string> players = {"Red"};
 
     bool quit = false;
     UI ui;
