@@ -23,7 +23,6 @@ int main(int, char **) {
     UI ui;
     ui.init();
 
-
     // Main loop
     while (!quit) {
         quit = ui.handleEvent();
