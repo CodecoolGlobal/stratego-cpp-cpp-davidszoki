@@ -23,14 +23,19 @@ int main(int, char **) {
     UI ui;
     ui.init();
 
+    bool started = false;
     // Main loop
     while (!quit) {
-        quit = ui.handleEvent();
+        quit = ui.handleEvent(started);
         SDL_RenderClear(ui.getRenderer());
-        SDL_SetRenderDrawColor(ui.getRenderer(), 53, 24, 6, 0);
-        ui.renderBattlefield(path);
-        ui.renderStartUnits(path, ranks, players);
-        //ui.renderStart(path);
+
+        if(!started) {
+            ui.renderStart(path);
+        } else {
+            ui.renderBattlefield(path);
+            ui.renderStartUnits(path, ranks, players);
+        }
+
 
         SDL_RenderPresent(ui.getRenderer());
     }

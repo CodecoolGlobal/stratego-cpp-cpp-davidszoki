@@ -29,7 +29,7 @@ public:
 
     void renderTexture(Texture &texture, SDL_Rect &rect, int width, int height, int x, int y);
 
-    bool handleEvent();
+    bool handleEvent(bool& started);
 
 private:
     SDL_Window *window;

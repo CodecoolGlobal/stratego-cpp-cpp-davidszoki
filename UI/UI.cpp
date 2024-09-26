@@ -5,6 +5,9 @@
 
 using namespace std;
 
+SDL_Rect quitButtonRect;
+SDL_Rect playButtonRect;
+
 UI::~UI() {
     if (renderer) SDL_DestroyRenderer(renderer);
     if (window) SDL_DestroyWindow(window);
@@ -84,20 +87,15 @@ void UI::renderBattlefield(string path) {
 }
 
 void UI::renderStart(std::string path) {
-    // Load and render the Stratego cover
     Texture strategoCover = loadTexture(path + "StrategoCover.png");
     SDL_Rect strategoRect;
     renderTexture(strategoCover, strategoRect, 1220, 820, 0, 0);
 
-    // Load and render the Play button
     Texture playButton = loadTexture(path + "PlayButton.png");
-    SDL_Rect playButtonRect;
-    renderTexture(playButton, playButtonRect, 200, 80, 510, 360);
+    renderTexture(playButton, playButtonRect, 200, 160, 510, 360);
 
-    // Load and render the Quit button
     Texture quitButton = loadTexture(path + "QuitButton.png");
-    SDL_Rect quitButtonRect;
-    renderTexture(quitButton, quitButtonRect, 200, 80, 510, 470);
+    renderTexture(quitButton, quitButtonRect, 100, 80, 560, 510);
 }
 
 void UI::renderStartUnits(string path, vector<string> ranks, vector<string> players) {
@@ -105,60 +103,68 @@ void UI::renderStartUnits(string path, vector<string> ranks, vector<string> play
     int xPos = 820;
     int yPos = 180;
 
-    // Define the number of units (ranks.size() * players.size())
     int numUnits = ranks.size() * players.size();
-    unitRects.resize(numUnits); // Resize the vector to the number of units
+    unitRects.resize(numUnits);
 
     int i = 0; // Unit counter
 
-    // Loop through all combinations of ranks and players
     for (const auto &player: players) {
         for (const auto &rank: ranks) {
-            // Load the texture for the current unit
             Texture unitImage = loadTexture(path + "Units\\" + player + rank + ".bmp"); // Assuming file format
 
-            // Set up the SDL_Rect for the current unit
             SDL_Rect rect;
             rect.h = 70;
             rect.w = 70;
             rect.x = xPos;
             rect.y = yPos;
 
-            // Save the current rect to the rects vector
             unitRects[i] = rect;
 
-            // Render the current unit immediately after loading the texture
             unitImage.render(renderer, &rect);
 
-            // Update position for the next unit
             xPos += 80;
 
-            // Move to the next row after every 5 units
             if ((i + 1) % 5 == 0) {
                 xPos = 820;
                 yPos += 80;
             }
 
-            i++; // Increment the unit counter
+            i++;
         }
     }
 }
 
 void UI::renderTexture(Texture &texture, SDL_Rect &rect, int width, int height, int x, int y) {
-    rect.h = height; // Set height
-    rect.w = width; // Set width
-    rect.x = x; // Set x position
-    rect.y = y; // Set y position
-    texture.render(renderer, &rect); // Render the texture
+    rect.h = height;
+    rect.w = width;
+    rect.x = x;
+    rect.y = y;
+    texture.render(renderer, &rect);
+}
+bool isMouseInsideRect(int mouseX, int mouseY, SDL_Rect& rect) {
+    return (mouseX > rect.x &&
+            mouseX < rect.x + rect.w &&
+            mouseY > rect.y &&
+            mouseY < rect.y + rect.h);
 }
 
-bool UI::handleEvent() {
+bool UI::handleEvent(bool& started) {
     bool quit = false;
     SDL_Event e;
     while (SDL_PollEvent(&e) != 0) {
         if (e.type == SDL_QUIT) {
             quit = true;
             break;
+        }
+        if(e.type == SDL_MOUSEBUTTONDOWN) {
+            int mouseX = e.button.x;
+            int mouseY = e.button.y;
+            std::cout << mouseX << "->x " << mouseY << "->y" << std::endl;
+            if(isMouseInsideRect(mouseX, mouseY, quitButtonRect)) {
+                quit = true;
+            } else if (isMouseInsideRect(mouseX,mouseY,playButtonRect)) {
+                started = true;
+            }
         }
     }
     return quit;
