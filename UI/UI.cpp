@@ -24,9 +24,7 @@ bool UI::init() {
 }
 
 Texture UI::loadTexture(const string &filename) {
-    SDL_Texture *imgTexture = IMG_LoadTexture_RW(renderer,
-                                                 SDL_RWFromFile(filename.c_str(), "rb"),
-                                                 1);
+    SDL_Texture *imgTexture = IMG_LoadTexture(renderer, filename.c_str());
     if (nullptr == imgTexture) {
         printf("File not found: %s SDL_image Error: %s\n", filename.c_str(), IMG_GetError());
     }
