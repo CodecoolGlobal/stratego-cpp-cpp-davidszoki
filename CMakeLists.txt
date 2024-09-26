@@ -21,7 +21,11 @@ add_executable(stratego_cpp_cpp_davidszoki
         Units/SpecialUnit/Scout.h
         Units/SpecialUnit/Spy.h
         Units/SpecialUnit/Miner.h
-        Units/NonSpecailUnit.h)
+        Units/NonSpecailUnit.h
+        Field/Field.h
+        Field/Obstacle.h
+        GameLogic/GameLogic.h
+        Field/Field.cpp)
 
 # Link SDL2 and SDL2_image libraries
 target_link_libraries(stratego_cpp_cpp_davidszoki

@@ -2,16 +2,18 @@
 #include <filesystem>
 #include "UI/Texture.h"
 #include "UI/UI.h"
-#include "Units/SpecialUnit/Flag.h"
-#include "Units/SpecialUnit/Spy.h"
-#include "Units/SpecialUnit/Scout.h"
-#include "Units/SpecialUnit/Miner.h"
-#include "Units/SpecialUnit/Marshal.h"
-#include "Units/SpecialUnit/Bomb.h"
-#include "Units/NonSpecailUnit.h"
+#include "./GameLogic/GameLogic.h"
 using namespace std;
 
 int main(int, char **) {
+    Marshal marshal = Marshal(Red,Position(0,0));
+    marshal.printPlayer();
+    marshal.getPosition().printPosition();
+
+    NonSpecialUnit colonel = NonSpecialUnit(Ranks::Colonel, Blue, Position(2,2));
+    colonel.printPlayer();
+    colonel.getPosition().printPosition();
+
 
     // UI ui;
     // ui.init();
