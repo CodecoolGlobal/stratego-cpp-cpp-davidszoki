@@ -20,10 +20,14 @@ public:
 
     SDL_Renderer *getRenderer() { return renderer; }
 
-    void renderBattlefield(SDL_Rect &rect, std::string path);
+    void renderStart(std::string path);
 
-    void renderStartUnits(std::vector<SDL_Rect> &rects, std::string path, std::vector<std::string> ranks,
+    void renderBattlefield(std::string path);
+
+    void renderStartUnits(std::string path, std::vector<std::string> ranks,
                           std::vector<std::string> players);
+
+    void renderTexture(Texture &texture, SDL_Rect &rect, int width, int height, int x, int y);
 
     bool handleEvent();
 
