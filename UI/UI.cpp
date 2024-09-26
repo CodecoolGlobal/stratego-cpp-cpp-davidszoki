@@ -79,7 +79,6 @@ void UI::renderBattlefield(string path) {
     renderTexture(resetImg, resetRect, 100,80,1030,10);
 }
 
-void UI::renderStartUnits(vector<SDL_Rect> &rects, string path, vector<string> ranks, vector<string> players) {
 void UI::renderStart(std::string path) {
     // Load and render the Stratego cover
     Texture strategoCover = loadTexture(path + "StrategoCover.png");
@@ -97,12 +96,14 @@ void UI::renderStart(std::string path) {
     renderTexture(quitButton, quitButtonRect, 200, 160, 510, 470);
 }
 
+void UI::renderStartUnits(string path, vector<string> ranks, vector<string> players) {
+    vector<SDL_Rect> unitRects;
     int xPos = 820;
     int yPos = 80;
 
     // Define the number of units (ranks.size() * players.size())
     int numUnits = ranks.size() * players.size();
-    rects.resize(numUnits); // Resize the vector to the number of units
+    unitRects.resize(numUnits); // Resize the vector to the number of units
 
     int i = 0; // Unit counter
 
@@ -120,7 +121,7 @@ void UI::renderStart(std::string path) {
             rect.y = yPos;
 
             // Save the current rect to the rects vector
-            rects[i] = rect;
+            unitRects[i] = rect;
 
             // Render the current unit immediately after loading the texture
             unitImage.render(renderer, &rect);
