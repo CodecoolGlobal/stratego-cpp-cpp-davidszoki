@@ -29,9 +29,10 @@ int main(int, char **) {
         quit = ui.handleEvent(started);
         SDL_RenderClear(ui.getRenderer());
 
-        if(!started) {
+        if (!started) {
             ui.renderStart(path);
         } else {
+            SDL_SetRenderDrawColor(ui.getRenderer(), 53, 24, 6, 0);
             ui.renderBattlefield(path);
             ui.renderStartUnits(path, ranks, players);
         }

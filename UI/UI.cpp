@@ -82,8 +82,8 @@ void UI::renderBattlefield(string path) {
 
     renderTexture(battlefieldImg, battlefieldRect, 800, 800, 10, 10);
     renderTexture(logoImg, logoRect, 250, 80, 820, 5);
-    renderTexture(restartImg, restartRect, 150,80,820,90);
-    renderTexture(nextImg, nextRect, 150,80,980,90);
+    renderTexture(restartImg, restartRect, 150, 80, 820, 90);
+    renderTexture(nextImg, nextRect, 150, 80, 980, 90);
 }
 
 void UI::renderStart(std::string path) {
@@ -92,10 +92,10 @@ void UI::renderStart(std::string path) {
     renderTexture(strategoCover, strategoRect, 1220, 820, 0, 0);
 
     Texture playButton = loadTexture(path + "PlayButton.png");
-    renderTexture(playButton, playButtonRect, 100, 80, 560, 360);
+    renderTexture(playButton, playButtonRect, 200, 80, 560, 360);
 
     Texture quitButton = loadTexture(path + "QuitButton.png");
-    renderTexture(quitButton, quitButtonRect, 100, 80, 560, 510);
+    renderTexture(quitButton, quitButtonRect, 200, 80, 560, 470);
 }
 
 void UI::renderStartUnits(string path, vector<string> ranks, vector<string> players) {
@@ -141,14 +141,15 @@ void UI::renderTexture(Texture &texture, SDL_Rect &rect, int width, int height, 
     rect.y = y;
     texture.render(renderer, &rect);
 }
-bool isMouseInsideRect(int mouseX, int mouseY, SDL_Rect& rect) {
+
+bool isMouseInsideRect(int mouseX, int mouseY, SDL_Rect &rect) {
     return (mouseX > rect.x &&
             mouseX < rect.x + rect.w &&
             mouseY > rect.y &&
             mouseY < rect.y + rect.h);
 }
 
-bool UI::handleEvent(bool& started) {
+bool UI::handleEvent(bool &started) {
     bool quit = false;
     SDL_Event e;
     while (SDL_PollEvent(&e) != 0) {
@@ -156,13 +157,13 @@ bool UI::handleEvent(bool& started) {
             quit = true;
             break;
         }
-        if(e.type == SDL_MOUSEBUTTONDOWN) {
+        if (e.type == SDL_MOUSEBUTTONDOWN) {
             int mouseX = e.button.x;
             int mouseY = e.button.y;
             std::cout << mouseX << "->x " << mouseY << "->y" << std::endl;
-            if(isMouseInsideRect(mouseX, mouseY, quitButtonRect)) {
+            if (isMouseInsideRect(mouseX, mouseY, quitButtonRect)) {
                 quit = true;
-            } else if (isMouseInsideRect(mouseX,mouseY,playButtonRect)) {
+            } else if (isMouseInsideRect(mouseX, mouseY, playButtonRect)) {
                 started = true;
             }
         }
