@@ -39,7 +39,9 @@ public:
 
     void renderTexture(Texture &texture, SDL_Rect &rect, int width, int height, int x, int y);
 
-    bool handleEvent(bool& started);
+    void handleStartQuitEvent(bool &start, bool &quit);
+
+    void handleUnitStartPlace(bool &quit);
 
 private:
     SDL_Window *window;

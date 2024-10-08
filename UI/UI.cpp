@@ -1,4 +1,3 @@
-#include "UI.h"
 #include <iostream>
 #include <SDL_image.h>
 #include <filesystem>
@@ -210,14 +209,131 @@ void UI::handleStartQuitEvent(bool &start, bool &quit) {
             if (isMouseInsideRect(mouseX, mouseY, quitButtonRect)) {
                 quit = true;
             } else if (isMouseInsideRect(mouseX, mouseY, playButtonRect)) {
-                started = true;
-            }
-        }
-    }
-    return quit;
                 start = true;
             }
         }
     }
 }
+
+void UI::handleUnitStartPlace(bool &quit) {
+    SDL_Event e;
+    bool isDragging = false;
+    SDL_UnitRect *selectedRect = nullptr; // Pointer to the currently dragged rectangle
+    SDL_Point originalPosition; // Original position of the rectangle
+
+    while (!quit) {
+        // Main event loop for the placement phase
+        while (SDL_PollEvent(&e) != 0) {
+            if (e.type == SDL_QUIT) {
+                quit = true;
+                break;
+            }
+            if (e.type == SDL_MOUSEBUTTONDOWN) {
+                int mouseX = e.button.x;
+                int mouseY = e.button.y;
+
+                // Check if a rectangle is selected for dragging
+                for (auto &unitRect: unitRects) {
+                    if (isMouseInsideRect(mouseX, mouseY, unitRect)) {
+                        isDragging = true;
+                        selectedRect = &unitRect;
+                        originalPosition = {unitRect.x, unitRect.y}; // Store original position
+                        std::cout << "Selected unit for dragging at (" << unitRect.x << ", " << unitRect.y << ")" <<
+                                std::endl;
+                        break;
+                    }
+                }
+            } else if (e.type == SDL_MOUSEMOTION && isDragging && selectedRect != nullptr) {
+                // Update the position of the selected rectangle to follow the mouse
+                int mouseX = e.motion.x;
+                int mouseY = e.motion.y;
+
+                selectedRect->x = mouseX - selectedRect->w / 2;
+                selectedRect->y = mouseY - selectedRect->h / 2;
+                std::cout << "Dragging unit to (" << selectedRect->x << ", " << selectedRect->y << ")" << std::endl;
+            } else if (e.type == SDL_MOUSEBUTTONUP && isDragging) {
+                int mouseX = e.button.x;
+                int mouseY = e.button.y;
+                // Check if the selected rectangle is within the battlefield and not overlapping with other units
+                if (selectedRect != nullptr) {
+                    int snapX = mouseX / (battlefieldRect.w / 10) * (battlefieldRect.w / 10) + 16;
+                    //int snapX = selectedRect->x - (selectedRect->x % 80) +16;
+                    int snapY = mouseY / (battlefieldRect.h / 10) * (battlefieldRect.h / 10) + 16;
+                    //int snapY = selectedRect->y - (selectedRect->y % 80) +16;
+
+                    bool isOutOfBounds = (selectedRect->x < 10 || selectedRect->x + selectedRect->w / 2 >
+                                          battlefieldRect.w ||
+                                          selectedRect->y < 490 || selectedRect->y + selectedRect->h / 2 >
+                                          battlefieldRect.h);
+
+                    if (isOutOfBounds) {
+                        std::cout << "Out of bounds: Attempted position (" << snapX << ", " << snapY << ")" <<
+                                std::endl;
+                    } else {
+                        std::cout << "In bounds: Attempted position (" << snapX << ", " << snapY << ")" << std::endl;
+                    }
+
+                    // Check for overlap with other unit rectangles
+                    bool isOverlapping = false;
+                    for (const auto &unitRect: unitRects) {
+                        if (&unitRect != selectedRect && SDL_HasIntersection(selectedRect, &unitRect)) {
+                            isOverlapping = true;
+                            std::cout << "Overlap detected with unit at (" << unitRect.x << ", " << unitRect.y << ")" <<
+                                    std::endl;
+                            break;
+                        }
+                    }
+
+                    if (!isOutOfBounds && !isOverlapping) {
+                        // No issues, snapping to calculated position
+                        selectedRect->x = snapX;
+                        selectedRect->y = snapY;
+                        std::cout << "Unit snapped to (" << snapX << ", " << snapY << ")" << std::endl;
+
+                        cout << "X: " << snapX / 80 << "Y: " << snapY / 80 << " Player: " << selectedRect->player <<
+                                " Unit: " << selectedRect->rank << endl;
+                    } else {
+                        // Snap back to original position if out of bounds or overlapping
+                        selectedRect->x = originalPosition.x;
+                        selectedRect->y = originalPosition.y;
+                        std::cout << "Unit returned to original position (" << originalPosition.x << ", " <<
+                                originalPosition.y << ")" << std::endl;
+                    }
+                }
+                isDragging = false;
+                selectedRect = nullptr;
+            }
+        }
+
+        // Clear the screen
+        SDL_SetRenderDrawColor(renderer, 53, 24, 6, 0); // Background color
+        SDL_RenderClear(renderer);
+
+        renderBattlefield();
+        renderUnits();
+
+        // Draw the selected rectangle last to ensure it’s on top
+        if (selectedRect != nullptr) {
+            // Load the image for the selected rectangle
+            renderUnit(selectedRect);
+
+            SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255); // Yellow outline for the selected rectangle
+            for (int offset = 0; offset < 4; offset++) {
+                // Adjust "4" for thickness
+                SDL_Rect highlightRect = {
+                    selectedRect->x - offset,
+                    selectedRect->y - offset,
+                    selectedRect->w + 2 * offset,
+                    selectedRect->h + 2 * offset
+                };
+                SDL_RenderDrawRect(renderer, &highlightRect);
+            }
+        }
+
+        // Present the updated renderer
+        SDL_RenderPresent(renderer);
+
+        // Delay for smoother rendering (adjust as necessary)
+        SDL_Delay(16); // Roughly 60 frames per second
+    }
 }
