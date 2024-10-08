@@ -10,7 +10,9 @@ find_package(SDL2_image CONFIG REQUIRED)
 add_executable(stratego_cpp_cpp_davidszoki main.cpp
         UI/UI.h
         UI/UI.cpp
-        UI/Texture.cpp)
+        UI/Texture.cpp
+        UI/SDL_UnitRect.h
+        UI/SDL_UnitRect.cpp)
 
 # Link SDL2 and SDL2_image libraries
 target_link_libraries(stratego_cpp_cpp_davidszoki
