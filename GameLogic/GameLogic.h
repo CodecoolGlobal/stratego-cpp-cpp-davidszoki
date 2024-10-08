@@ -1,8 +1,13 @@
 #pragma once
-#include "../Units/SpecialUnit/Flag.h"
-#include "../Units/SpecialUnit/Spy.h"
-#include "../Units/SpecialUnit/Scout.h"
-#include "../Units/SpecialUnit/Miner.h"
-#include "../Units/SpecialUnit/Marshal.h"
-#include "../Units/SpecialUnit/Bomb.h"
-#include "../Units/NonSpecailUnit.h"
+#include "../Field/Field.h"
+#include <memory>
+#include <vector>
+
+class GameLogic {
+    Players players;
+    std::vector<std::vector<std::shared_ptr<Field>>> fields;
+    public:
+    GameLogic(Players player);
+    void initializedBoard();
+    void printboard();
+};

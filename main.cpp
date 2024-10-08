@@ -6,14 +6,10 @@
 using namespace std;
 
 int main(int, char **) {
-    Marshal marshal = Marshal(Red,Position(0,0));
-    marshal.printPlayer();
-    marshal.getPosition().printPosition();
 
-    NonSpecialUnit colonel = NonSpecialUnit(Ranks::Colonel, Blue, Position(2,2));
-    colonel.printPlayer();
-    colonel.getPosition().printPosition();
-
+    GameLogic game_logic(Red);
+    game_logic.initializedBoard();
+    game_logic.printboard();
 
     // UI ui;
     // ui.init();
