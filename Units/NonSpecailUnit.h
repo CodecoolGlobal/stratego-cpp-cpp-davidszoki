@@ -1,8 +1,8 @@
 #pragma once
-#include "Unit.h"
+#include "ArmyUnit.h"
 
-class NonSpecialUnit : public Unit {
+class NonSpecialUnit : public ArmyUnit {
 public:
-    NonSpecialUnit(Ranks rank, Players player, Position position) : Unit(rank, player, position) {
+    NonSpecialUnit(Ranks rank, Players player) : ArmyUnit(rank, player) {
     }
 };

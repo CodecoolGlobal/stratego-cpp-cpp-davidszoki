@@ -1,8 +1,8 @@
 #include <iostream>
-#include "Unit.h"
+#include "ArmyUnit.h"
 using namespace std;
 
-void Unit::printPlayer() const {
+void ArmyUnit::print() const {
     cout << "Player: " << getPlayer() << endl;
 }
 

@@ -1,8 +1,8 @@
 #pragma once
-#include "../Unit.h"
+#include "../ArmyUnit.h"
 
-class Marshal : public Unit {
+class Marshal : public ArmyUnit {
 public:
-    Marshal(Players player, Position position) : Unit(Ranks::Marshal, player, position) {
+    Marshal(Players player) : ArmyUnit(Ranks::Marshal, player) {
     }
 };

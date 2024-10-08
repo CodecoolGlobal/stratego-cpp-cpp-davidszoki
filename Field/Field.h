@@ -1,5 +1,5 @@
 #pragma once
-#include "Obstacle.h"
+#include "../Units/Unit.h"
 
 class Position {
     int x;
@@ -14,3 +14,16 @@ public:
     void setY(int newY) { y = newY; }
     void printPosition() const;
 };
+
+class Field {
+    Unit* unit = nullptr;
+    Position position;
+    public:
+    Field(Position position) : position(position) {}
+    bool setUnit(Unit* unit);
+    Unit* getUnit() {
+        return unit;
+    }
+    void printField() const;
+};
+
