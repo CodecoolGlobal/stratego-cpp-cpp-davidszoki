@@ -25,10 +25,11 @@ public:
 
     void renderStart();
 
-    void renderBattlefield(std::string path);
+    void renderUnit(SDL_UnitRect *unitRect);
 
-    void renderStartUnits(std::string path, std::vector<std::string> ranks,
-                          std::vector<std::string> players);
+    void renderUnit(SDL_UnitRect &unitRect);
+
+    void renderUnits();
 
     void renderBattleStart(std::vector<std::string> ranks, std::vector<std::string> players, bool &quit);
 

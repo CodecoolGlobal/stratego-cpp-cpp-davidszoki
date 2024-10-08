@@ -125,6 +125,25 @@ void UI::renderStart() {
 
     Texture quitButton = loadTexture(path + "QuitButton.png");
     renderTexture(quitButton, quitButtonRect, 200, 80, 530, 470);
+
+    SDL_RenderPresent(renderer);
+}
+
+void UI::renderUnit(SDL_UnitRect &unitRect) {
+    Texture unitImage = loadTexture(path + "Units\\" + unitRect.player + unitRect.rank + ".bmp");
+    unitImage.render(renderer, &unitRect);
+}
+
+void UI::renderUnit(SDL_UnitRect *unitRect) {
+    Texture unitImage = loadTexture(path + "Units\\" + unitRect->player + unitRect->rank + ".bmp");
+    unitImage.render(renderer, unitRect);
+}
+
+void UI::renderUnits() {
+    for (auto unitRect: unitRects) {
+        Texture unitImage = loadTexture(path + "Units\\" + unitRect.player + unitRect.rank + ".bmp");
+        unitImage.render(renderer, &unitRect);
+    }
 }
 
 void UI::renderStartUnits(vector<string> ranks, vector<string> players) {
