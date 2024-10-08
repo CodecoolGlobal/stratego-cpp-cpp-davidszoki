@@ -3,6 +3,5 @@
 using namespace std;
 
 void ArmyUnit::print() const {
-    cout << "Player: " << getPlayer() << endl;
+    cout << getPlayer() << getRank();
 }
-
