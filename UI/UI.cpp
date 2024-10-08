@@ -1,12 +1,22 @@
 #include "UI.h"
 #include <iostream>
 #include <SDL_image.h>
+#include <filesystem>
+#include "UI.h"
+#include "SDL_UnitRect.h"
 #include "Texture.h"
 
 using namespace std;
 
+static auto path = (filesystem::current_path().parent_path() /= "Resources\\").u8string();
+
+SDL_Rect battlefieldRect;
 SDL_Rect quitButtonRect;
 SDL_Rect playButtonRect;
+SDL_Rect restartButtonRect;
+SDL_Rect nextButtonRect;
+SDL_Rect logoRect;
+vector<SDL_UnitRect> unitRects;
 
 UI::~UI() {
     if (renderer) SDL_DestroyRenderer(renderer);
@@ -67,26 +77,45 @@ bool UI::initSDLImage() {
     return true;
 }
 
-void UI::renderBattlefield(string path) {
+void UI::run(vector<string> ranks, vector<string> players) {
+    pair startQuit = {false, false};
+    init();
+
+    while (!startQuit.second) {
+        handleStartQuitEvent(startQuit.first, startQuit.second);
+        if (!startQuit.first) {
+            renderStart();
+        } else {
+            renderBattleStart(ranks, players, startQuit.second);
+        }
+    }
+}
+
+void UI::renderBattleStart(vector<string> ranks, vector<string> players, bool &quit) {
+    SDL_RenderClear(renderer);
+    SDL_SetRenderDrawColor(renderer, 53, 24, 6, 0);
+
+    renderBattlefield();
+    renderStartUnits(ranks, players);
+    handleUnitStartPlace(quit);
+    SDL_RenderPresent(renderer);
+}
+
+void UI::renderBattlefield() {
     Texture battlefieldImg = loadTexture(path + "Battlefield.bmp");
-    SDL_Rect battlefieldRect;
-
     Texture logoImg = loadTexture(path + "StrategoLogo.png");
-    SDL_Rect logoRect;
-
     Texture restartImg = loadTexture(path + "RestartButton.png");
-    SDL_Rect restartRect;
-
     Texture nextImg = loadTexture(path + "NextButton.png");
-    SDL_Rect nextRect;
 
     renderTexture(battlefieldImg, battlefieldRect, 800, 800, 10, 10);
     renderTexture(logoImg, logoRect, 250, 80, 820, 5);
-    renderTexture(restartImg, restartRect, 150, 80, 820, 90);
-    renderTexture(nextImg, nextRect, 150, 80, 980, 90);
+    renderTexture(restartImg, restartButtonRect, 150, 80, 820, 90);
+    renderTexture(nextImg, nextButtonRect, 150, 80, 980, 90);
 }
 
-void UI::renderStart(std::string path) {
+void UI::renderStart() {
+    SDL_RenderClear(renderer);
+
     Texture strategoCover = loadTexture(path + "StrategoCover.png");
     SDL_Rect strategoRect;
     renderTexture(strategoCover, strategoRect, 1220, 820, 0, 0);
@@ -98,8 +127,7 @@ void UI::renderStart(std::string path) {
     renderTexture(quitButton, quitButtonRect, 200, 80, 530, 470);
 }
 
-void UI::renderStartUnits(string path, vector<string> ranks, vector<string> players) {
-    vector<SDL_Rect> unitRects;
+void UI::renderStartUnits(vector<string> ranks, vector<string> players) {
     int xPos = 820;
     int yPos = 180;
 
@@ -110,9 +138,9 @@ void UI::renderStartUnits(string path, vector<string> ranks, vector<string> play
 
     for (const auto &player: players) {
         for (const auto &rank: ranks) {
-            Texture unitImage = loadTexture(path + "Units\\" + player + rank + ".bmp"); // Assuming file format
+            //Texture unitImage = loadTexture(path + "Units\\" + player + rank + ".bmp"); // Assuming file format
 
-            SDL_Rect rect;
+            SDL_UnitRect rect(rank, player);
             rect.h = 70;
             rect.w = 70;
             rect.x = xPos;
@@ -120,7 +148,7 @@ void UI::renderStartUnits(string path, vector<string> ranks, vector<string> play
 
             unitRects[i] = rect;
 
-            unitImage.render(renderer, &rect);
+            //unitImage.render(renderer, &rect);
 
             xPos += 80;
 
@@ -149,8 +177,7 @@ bool isMouseInsideRect(int mouseX, int mouseY, SDL_Rect &rect) {
             mouseY < rect.y + rect.h);
 }
 
-bool UI::handleEvent(bool &started) {
-    bool quit = false;
+void UI::handleStartQuitEvent(bool &start, bool &quit) {
     SDL_Event e;
     while (SDL_PollEvent(&e) != 0) {
         if (e.type == SDL_QUIT) {
@@ -160,7 +187,7 @@ bool UI::handleEvent(bool &started) {
         if (e.type == SDL_MOUSEBUTTONDOWN) {
             int mouseX = e.button.x;
             int mouseY = e.button.y;
-            std::cout << mouseX << "->x " << mouseY << "->y" << std::endl;
+
             if (isMouseInsideRect(mouseX, mouseY, quitButtonRect)) {
                 quit = true;
             } else if (isMouseInsideRect(mouseX, mouseY, playButtonRect)) {
@@ -169,4 +196,9 @@ bool UI::handleEvent(bool &started) {
         }
     }
     return quit;
+                start = true;
+            }
+        }
+    }
+}
 }

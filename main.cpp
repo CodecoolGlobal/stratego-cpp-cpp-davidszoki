@@ -1,12 +1,9 @@
 #include <iostream>
-#include <filesystem>
 #include <vector>
 #include "UI/Texture.h"
 #include "UI/UI.h"
 
 using namespace std;
-
-static auto path = (filesystem::current_path().parent_path() /= "Resources\\").u8string();
 
 int main(int, char **) {
     vector<string> ranks = {
@@ -19,26 +16,7 @@ int main(int, char **) {
 
     vector<string> players = {"Red"};
 
-    bool quit = false;
     UI ui;
-    ui.init();
-
-    bool started = false;
-    // Main loop
-    while (!quit) {
-        quit = ui.handleEvent(started);
-        SDL_RenderClear(ui.getRenderer());
-
-        if (!started) {
-            ui.renderStart(path);
-        } else {
-            SDL_SetRenderDrawColor(ui.getRenderer(), 53, 24, 6, 0);
-            ui.renderBattlefield(path);
-            ui.renderStartUnits(path, ranks, players);
-        }
-
-
-        SDL_RenderPresent(ui.getRenderer());
-    }
+    ui.run(ranks, players);
     return 0;
 }
