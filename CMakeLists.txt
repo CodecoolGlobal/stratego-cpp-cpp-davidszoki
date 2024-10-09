@@ -10,7 +10,21 @@ find_package(SDL2_image CONFIG REQUIRED)
 add_executable(stratego_cpp_cpp_davidszoki main.cpp
         UI/UI.h
         UI/UI.cpp
-        UI/Texture.cpp)
+        UI/Texture.cpp
+        GameLogic/GameLogic.h
+        GameLogic/GameLogic.cpp
+        GameLogic/Field.h
+        GameLogic/Field.cpp
+        GameLogic/Units/ArmyUnit.h
+        GameLogic/Units/Enum.h
+        GameLogic/Units/ArmyUnit.cpp
+        GameLogic/Units/NonSpecialUnit.h
+        GameLogic/Units/SpecialUnit/Bomb.h
+        GameLogic/Units/SpecialUnit/Flag.h
+        GameLogic/Units/SpecialUnit/Marshal.h
+        GameLogic/Units/SpecialUnit/Miner.h
+        GameLogic/Units/SpecialUnit/Scout.h
+        GameLogic/Units/SpecialUnit/Spy.h)
 
 # Link SDL2 and SDL2_image libraries
 target_link_libraries(stratego_cpp_cpp_davidszoki
