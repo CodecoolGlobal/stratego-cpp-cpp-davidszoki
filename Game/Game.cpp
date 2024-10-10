@@ -39,6 +39,14 @@ void Game::printBoard() const {
     cout << endl;
 }
 
+Field *Game::getFieldPtr(const std::pair<int, int> &field) const {
+    if (field.first < 0 || field.first >= battleField.size() ||
+        field.second < 0 || field.second >= battleField[0].size()) {
+        return nullptr; // Out of bounds check
+    }
+    return battleField[field.first][field.second].get();
+}
+
 void Game::transferUnit(const std::pair<int, int> &from, const std::pair<int, int> &to) {
     getFieldPtr(to)->setUnit(getFieldPtr(from)->getUnit());
     getFieldPtr(from)->setUnit(nullptr);
