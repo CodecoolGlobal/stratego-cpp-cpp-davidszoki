@@ -22,6 +22,8 @@ public:
 
     void printBoard() const;
 
+    bool checkMoveInBounds(const std::pair<int, int> &to) const;
+
     bool checkUnitMoveable(Unit *unit) const;
 
     bool checkIsOwnUnit(const std::pair<int, int> &from, Players currentPlayer) const;
