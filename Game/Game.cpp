@@ -39,6 +39,10 @@ void Game::printBoard() const {
     cout << endl;
 }
 
+bool Game::checkTargetFieldEmpty(const std::pair<int, int> &to) const {
+    return getFieldPtr(to)->getUnitPtr() == nullptr;
+}
+
 bool Game::checkTargetFieldHasEnemyUnit(const std::pair<int, int> &to, Players player) const {
     auto targetUnit = getFieldPtr(to)->getUnitPtr();
     return targetUnit && (targetUnit->getPlayer() != player);

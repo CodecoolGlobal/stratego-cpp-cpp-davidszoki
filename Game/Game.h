@@ -22,6 +22,8 @@ public:
 
     void printBoard() const;
 
+    bool checkTargetFieldEmpty(const std::pair<int, int> &to) const;
+
     bool checkTargetFieldHasEnemyUnit(const std::pair<int, int> &to, Players player) const;
 
     bool checkMoveValidation(const std::pair<int, int> &from, const std::pair<int, int> &to,
