@@ -39,6 +39,10 @@ void Game::printBoard() const {
     cout << endl;
 }
 
+bool Game::checkUnitMoveable(Unit *unit) const {
+    return unit->getMoveable();
+}
+
 bool Game::checkIsOwnUnit(const std::pair<int, int> &from, Players currentPlayer) const {
     return getFieldPtr(from)->getUnitPtr() && getFieldPtr(from)->getUnitPtr()->getPlayer() == currentPlayer;
 }

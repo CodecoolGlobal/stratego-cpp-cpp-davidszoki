@@ -22,6 +22,8 @@ public:
 
     void printBoard() const;
 
+    bool checkUnitMoveable(Unit *unit) const;
+
     bool checkIsOwnUnit(const std::pair<int, int> &from, Players currentPlayer) const;
 
     bool checkDistanceValidation(const std::pair<int, int> &from, const std::pair<int, int> &to) const;
