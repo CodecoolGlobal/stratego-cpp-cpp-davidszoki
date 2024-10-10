@@ -31,3 +31,32 @@ inline std::ostream& operator<<(std::ostream& os, const Players& player) {
     }
     return os;
 }
+
+// Function to convert Ranks enum to string
+inline std::string toString(const Ranks& rank) {
+    switch(rank) {
+        case Ranks::Flag: return "Flag";
+        case Ranks::Spy: return "Spy";
+        case Ranks::Scout: return "Scout";
+        case Ranks::Miner: return "Miner";
+        case Ranks::Sergeant: return "Sergeant";
+        case Ranks::Lieutenant: return "Lieutenant";
+        case Ranks::Captain: return "Captain";
+        case Ranks::Major: return "Major";
+        case Ranks::Colonel: return "Colonel";
+        case Ranks::General: return "General";
+        case Ranks::Marshal: return "Marshal";
+        case Ranks::Bomb: return "Bomb";
+        default: return "Unknown Rank";
+    }
+}
+
+// Function to convert Players enum to string
+inline std::string toString(const Players& player) {
+    switch(player) {
+        case Players::Red: return "Red";
+        case Players::Blue: return "Blue";
+        case Players::none: return "None";
+        default: return "Unknown Player";
+    }
+}

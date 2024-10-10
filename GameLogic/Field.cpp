@@ -17,3 +17,7 @@ bool Field::setUnit(Unit* unit) {
     this->unit = unit;
     return true;
 }
+
+int Field::getId() {
+    return this->id;
+}

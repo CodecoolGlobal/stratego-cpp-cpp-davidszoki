@@ -9,8 +9,8 @@
 using namespace std;
 
 int main(int, char **) {
-    vector<string> players = {"Blue", "Red"};
+    vector<string> players = {"Red", "Blue"};
     GameLogic* gameLogic = new GameLogic();
-    (*gameLogic).run(players);
+    (*gameLogic).run();
     return 0;
 }

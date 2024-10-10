@@ -5,11 +5,14 @@
 #include <vector>
 #include "SDL_UnitRect.h"
 #include "Texture.h"
+#include "../GameLogic/GameLogic.h"
+
+class GameLogic;
 
 class UI {
 public:
-    UI() : window(nullptr), renderer(nullptr) {
-    }
+    UI(GameLogic* gameLogic) : window(nullptr), renderer(nullptr), gameLogic(gameLogic) {
+    };
 
     ~UI();
 
@@ -21,7 +24,7 @@ public:
 
     SDL_Renderer *getRenderer() { return renderer; }
 
-    void run(std::vector<std::string> ranks, std::vector<std::string> players);
+    void run(std::vector<Ranks> ranks, std::vector<Players> players);
 
     void renderStart();
 
@@ -31,11 +34,11 @@ public:
 
     void renderUnits();
 
-    void renderBattleStart(std::vector<std::string> ranks, std::vector<std::string> players, bool &quit);
+    void renderBattleStart(std::vector<Ranks> ranks, std::vector<Players> players, bool &quit);
 
     void renderBattlefield();
 
-    void renderStartUnits(std::vector<std::string> ranks, std::vector<std::string> players);
+    void renderStartUnits(std::vector<Ranks> ranks, std::vector<Players> players);
 
     void renderTexture(Texture &texture, SDL_Rect &rect, int width, int height, int x, int y);
 
@@ -46,6 +49,7 @@ public:
 private:
     SDL_Window *window;
     SDL_Renderer *renderer;
+    GameLogic *gameLogic;
 
     bool createWindow();
 
@@ -54,4 +58,5 @@ private:
     bool initSDLImage();
 
     void printRectVector();
+
 };

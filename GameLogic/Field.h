@@ -17,12 +17,13 @@ public:
 
 class Field {
     Unit* unit = nullptr;
-    Position position;
+    int id;
 public:
-    Field(Position position) : position(position) {}
+    Field(int id) : id(id) {}
     bool setUnit(Unit* unit);
     Unit* getUnit() {
         return unit;
     }
     void printField() const;
+    int getId();
 };

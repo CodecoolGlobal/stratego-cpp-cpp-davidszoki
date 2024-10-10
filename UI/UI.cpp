@@ -4,6 +4,7 @@
 #include "UI.h"
 #include "SDL_UnitRect.h"
 #include "Texture.h"
+#include "../GameLogic/GameLogic.h"
 
 class Unit;
 using namespace std;
@@ -78,7 +79,7 @@ bool UI::initSDLImage() {
     return true;
 }
 
-void UI::run(vector<string> ranks, vector<string> players) {
+void UI::run(vector<Ranks> ranks, vector<Players> players) {
     pair startQuit = {false, false};
     init();
 
@@ -92,7 +93,7 @@ void UI::run(vector<string> ranks, vector<string> players) {
     }
 }
 
-void UI::renderBattleStart(vector<string> ranks, vector<string> players, bool &quit) {
+void UI::renderBattleStart(vector<Ranks> ranks, vector<Players> players, bool &quit) {
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, 53, 24, 6, 0);
 
@@ -131,23 +132,23 @@ void UI::renderStart() {
 }
 
 void UI::renderUnit(SDL_UnitRect &unitRect) {
-    Texture unitImage = loadTexture(path + "Units\\" + unitRect.player + unitRect.rank + ".bmp");
+    Texture unitImage = loadTexture(path + "Units\\" + toString(unitRect.player) + toString(unitRect.rank) + ".bmp");
     unitImage.render(renderer, &unitRect);
 }
 
 void UI::renderUnit(SDL_UnitRect *unitRect) {
-    Texture unitImage = loadTexture(path + "Units\\" + unitRect->player + unitRect->rank + ".bmp");
+    Texture unitImage = loadTexture(path + "Units\\" + toString(unitRect->player) + toString(unitRect->rank) + ".bmp");
     unitImage.render(renderer, unitRect);
 }
 
 void UI::renderUnits() {
     for (auto unitRect: unitRects) {
-        Texture unitImage = loadTexture(path + "Units\\" + unitRect.player + unitRect.rank + ".bmp");
+        Texture unitImage = loadTexture(path + "Units\\" + toString(unitRect.player) + toString(unitRect.rank) + ".bmp");
         unitImage.render(renderer, &unitRect);
     }
 }
 
-void UI::renderStartUnits(vector<string> ranks, vector<string> players) {
+void UI::renderStartUnits(vector<Ranks> ranks, vector<Players> players) {
     int xPos = 820;
     int yPos = 180;
 
@@ -156,7 +157,7 @@ void UI::renderStartUnits(vector<string> ranks, vector<string> players) {
 
     int i = 0; // Unit counter
 
-    for (const auto &player: players) {
+    for (const auto player: players) {
         for (const auto &rank: ranks) {
             //Texture unitImage = loadTexture(path + "Units\\" + player + rank + ".bmp"); // Assuming file format
 
@@ -180,6 +181,9 @@ void UI::renderStartUnits(vector<string> ranks, vector<string> players) {
             i++;
         }
     }
+    /*for (SDL_UnitRect rect : unitRects) {
+        cout << rect.getRank() << "\n";
+    }*/
 }
 
 void UI::renderTexture(Texture &texture, SDL_Rect &rect, int width, int height, int x, int y) {
@@ -253,7 +257,17 @@ void UI::handleUnitStartPlace(bool &quit) {
                     }
                 }
                 if(isMouseInsideRect(mouseX, mouseY, nextButtonRect)) {
-
+                    bool isFull = true;
+                    for (vector<SDL_UnitRect*> rects : units) {
+                        for(SDL_UnitRect* rect : rects) {
+                            if(rect == nullptr) {
+                                isFull = false;
+                            }
+                        }
+                    }
+                    if(isFull) {
+                        gameLogic->copyArmyToBoard(units);
+                    }
                 }
             } else if (e.type == SDL_MOUSEMOTION && isDragging && selectedRect != nullptr) {
                 // Update the position of the selected rectangle to follow the mouse
@@ -286,7 +300,7 @@ void UI::handleUnitStartPlace(bool &quit) {
                     }
 
                     // Check for overlap with other unit rectangles
-                    bool isOverlapping = false;
+                    /*bool isOverlapping = false;
                     for (const auto &unitRect: unitRects) {
                         if (&unitRect != selectedRect && SDL_HasIntersection(selectedRect, &unitRect)) {
                             isOverlapping = true;
@@ -294,7 +308,7 @@ void UI::handleUnitStartPlace(bool &quit) {
                                     std::endl;
                             break;
                         }
-                    }
+                    }*/
 
                     if (!isOutOfBounds) {
                         int flooredY = static_cast<int>(std::floor((snapY - 480) / 80));
@@ -321,6 +335,15 @@ void UI::handleUnitStartPlace(bool &quit) {
                             std::cout << "Unit returned to original position (" << originalPosition.x << ", " <<
                                     originalPosition.y << ")" << std::endl;
                         }
+                    } else {
+                        // Snap back to original position if out of bounds or overlapping
+                        selectedRect->x = originalPosition.x;
+                        selectedRect->y = originalPosition.y;
+                        if(originY != -1) {
+                            units[originY][originX] = selectedRect;
+                        }
+                        std::cout << "Unit returned to original position (" << originalPosition.x << ", " <<
+                                originalPosition.y << ")" << std::endl;
                     }
                 }
                 isDragging = false;
@@ -365,7 +388,7 @@ void UI::printRectVector() {
     for (size_t row = 0; row < units.size(); ++row) {
         for (size_t col = 0; col < units[row].size(); ++col) {
             if(units[row][col]) {
-                cout << units[row][col]->player + units[row][col]->rank;
+                cout << toString(units[row][col]->player) + toString(units[row][col]->rank);
             } else {
                 cout << "[Empty]";
             }
@@ -375,3 +398,5 @@ void UI::printRectVector() {
     }
 
 }
+
+

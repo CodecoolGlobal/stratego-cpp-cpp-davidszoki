@@ -2,13 +2,18 @@
 #include <SDL_rect.h>
 #include <string>
 #include <utility>
+#include "../GameLogic/Units/Enum.h"
 
 class SDL_UnitRect : public SDL_Rect {
+
 public:
     SDL_UnitRect() = default; // Default constructor
-    SDL_UnitRect(std::string rank, std::string player) : SDL_Rect(), rank(std::move(rank)), player(std::move(player)) {
+    SDL_UnitRect(Ranks rank, Players player) : SDL_Rect(), rank(rank), player(player) {
+    }
+    Ranks getRank() const {
+        return rank;
     }
 
-    std::string rank;
-    std::string player;
+    Ranks rank;
+    Players player;
 };
