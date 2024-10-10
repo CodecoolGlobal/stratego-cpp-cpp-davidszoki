@@ -28,6 +28,17 @@ vector<pair<int, int> > Game::obstacleLocations = {
     pair(4, 2), pair(4, 3), pair(4, 6), pair(4, 7), pair(5, 2), pair(5, 3), pair(5, 6), pair(5, 7)
 };
 
+bool Game::canPlayerMove(Players player) {
+    for (int i = 0; i < battleField.size(); ++i) {
+        for (int j = 0; j < battleField[i].size(); ++j) {
+            auto unit = battleField[i][j]->getUnitPtr();
+            if (unit && unit->getPlayer() == player && unit->getMoveable()) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
 void Game::printBoard() const {
     for (size_t row = 0; row < battleField.size(); ++row) {
         for (size_t col = 0; col < battleField[row].size(); ++col) {

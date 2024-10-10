@@ -20,6 +20,8 @@ public:
 
     void initializeBoard();
 
+    bool canPlayerMove(Players player);
+
     void printBoard() const;
 
     Field *getFieldPtr(const std::pair<int, int> &field) const;
