@@ -47,6 +47,34 @@ void Game::transferUnit(const std::pair<int, int> &from, const std::pair<int, in
 void Game::removeUnit(const std::pair<int, int> &field) {
     getFieldPtr(field)->setUnit(nullptr);
 }
+
+bool Game::handleAction(const pair<int, int> &from, const pair<int, int> &to, Players currentPlayer) {
+    Unit *unit = getFieldPtr(from)->getUnitPtr();
+    if (!unit) {
+        cout << "No unit to move from this position." << endl;
+        return false;
+    }
+
+    // Check move validity
+    if (!checkMoveValidation(from, to, currentPlayer)) {
+        cout << "Invalid move." << endl;
+        return false;
+    }
+
+    if (checkTargetFieldEmpty(to)) {
+        transferUnit(from, to); // Move to the empty field
+        cout << "Moved unit to empty field." << endl;
+        return true;
+    }
+    if (checkTargetFieldHasEnemyUnit(to, unit->getPlayer())) {
+        // Only engage in capture if the target is an enemy unit
+        handleCapture(from, to);
+        return true;
+    }
+    cout << "Cannot move to a field occupied by an ally unit." << endl;
+    return false;
+}
+
 void Game::handleCapture(const std::pair<int, int> &from, const std::pair<int, int> &to) {
     Field *fromField = getFieldPtr(from);
     Field *toField = getFieldPtr(to);
