@@ -44,6 +44,21 @@ bool Game::canPlayerMove(Players player) {
     }
     return false;
 }
+
+void Game::initializeBoard() {
+    battleField.resize(10);
+    for (int i = 0; i < battleField.size(); i++) {
+        battleField[i].resize(10);
+        for (int j = 0; j < battleField[i].size(); j++) {
+            battleField[i][j] = make_unique<Field>(); // Explicitly initialize each position to nullptr
+        }
+    }
+
+    for (const auto [x, y]: obstacleLocations) {
+        battleField[x][y]->setUnit(make_unique<Obstacle>());
+    }
+}
+
 void Game::printBoard() const {
     for (size_t row = 0; row < battleField.size(); ++row) {
         for (size_t col = 0; col < battleField[row].size(); ++col) {
