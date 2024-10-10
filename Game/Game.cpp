@@ -39,6 +39,29 @@ void Game::printBoard() const {
     cout << endl;
 }
 
+void Game::executeStandardCapture(Unit *fromUnit, Unit *toUnit, const std::pair<int, int> &from,
+                                  const std::pair<int, int> &to) {
+    if (!fromUnit || !toUnit) {
+        cout << "Invalid capture logic." << endl;
+        return;
+    }
+
+    Ranks fromRank = fromUnit->getRank();
+    Ranks toRank = toUnit->getRank();
+
+    if (fromRank == toRank) {
+        removeUnit(from);
+        removeUnit(to);
+        cout << "Both units are defeated!" << endl;
+    } else if (toRank > fromRank) {
+        removeUnit(from);
+        cout << "Attacking unit was defeated!" << endl;
+    } else {
+        transferUnit(from, to);
+        cout << "Capture successful!" << endl;
+    }
+}
+
 Ranks Game::checkFieldUnitRank(const std::pair<int, int> &field) const {
     if (const auto unit = getFieldPtr(field)->getUnitPtr()) {
         return unit->getRank();

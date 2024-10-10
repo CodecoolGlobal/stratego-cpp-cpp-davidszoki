@@ -22,6 +22,9 @@ public:
 
     void printBoard() const;
 
+    void executeStandardCapture(Unit *fromUnit, Unit *toUnit, const std::pair<int, int> &from,
+                                const std::pair<int, int> &to);
+
     Ranks checkFieldUnitRank(const std::pair<int, int> &field) const;
 
     bool checkMoveInBounds(const std::pair<int, int> &to) const;
