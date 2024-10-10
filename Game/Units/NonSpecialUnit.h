@@ -3,6 +3,6 @@
 
 class NonSpecialUnit : public ArmyUnit {
 public:
-    NonSpecialUnit(Ranks rank, Players player) : ArmyUnit(rank, player) {
+    NonSpecialUnit(Players player, Ranks rank) : ArmyUnit(player, rank, true) {
     }
 };
