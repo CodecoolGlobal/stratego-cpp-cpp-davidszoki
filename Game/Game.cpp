@@ -39,6 +39,10 @@ void Game::printBoard() const {
     cout << endl;
 }
 
+bool Game::checkIsOwnUnit(const std::pair<int, int> &from, Players currentPlayer) const {
+    return getFieldPtr(from)->getUnitPtr() && getFieldPtr(from)->getUnitPtr()->getPlayer() == currentPlayer;
+}
+
 bool Game::checkDistanceValidation(const std::pair<int, int> &from, const std::pair<int, int> &to) const {
     if ((abs(from.first - to.first) == 1 && from.second == to.second) ||
         (abs(from.second - to.second) == 1 && from.first == to.first))
