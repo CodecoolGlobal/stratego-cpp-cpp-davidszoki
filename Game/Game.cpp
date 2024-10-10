@@ -39,6 +39,39 @@ void Game::printBoard() const {
     cout << endl;
 }
 
+void Game::handleCapture(const std::pair<int, int> &from, const std::pair<int, int> &to) {
+    Field *fromField = getFieldPtr(from);
+    Field *toField = getFieldPtr(to);
+
+    if (!fromField || !toField) {
+        cout << "Invalid move: field is out of bounds." << endl;
+        return;
+    }
+
+    Unit *fromUnit = fromField->getUnitPtr();
+    Unit *toUnit = toField->getUnitPtr();
+
+    if (!fromUnit) {
+        cout << "No unit at the source field." << endl;
+        return;
+    }
+
+    // Ensure the target is an enemy unit
+    if (!toUnit || fromUnit->getPlayer() == toUnit->getPlayer()) {
+        cout << "Cannot capture an allied unit!" << endl;
+        return;
+    }
+
+    if (toUnit && toUnit->getRank() == Ranks::Flag) {
+        gameEnded = true;
+        cout << (fromUnit->getPlayer() == Players::Red ? "Blue" : "Red") << " wins by capturing the flag!" << endl;
+    }
+
+    if (checkSpecialCaptureRules(fromUnit, toUnit, from, to)) return;
+
+    executeStandardCapture(fromUnit, toUnit, from, to);
+}
+
 bool Game::checkSpecialCaptureRules(Unit *fromUnit, Unit *toUnit, const std::pair<int, int> &from,
                                     const std::pair<int, int> &to) {
     if (!fromUnit || !toUnit) {

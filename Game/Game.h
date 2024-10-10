@@ -22,6 +22,8 @@ public:
 
     void printBoard() const;
 
+    void handleCapture(const std::pair<int, int> &from, const std::pair<int, int> &to);
+
     void executeStandardCapture(Unit *fromUnit, Unit *toUnit, const std::pair<int, int> &from,
                                 const std::pair<int, int> &to);
 
