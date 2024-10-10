@@ -38,6 +38,12 @@ void Game::printBoard() const {
     }
     cout << endl;
 }
+
+bool Game::checkTargetFieldHasEnemyUnit(const std::pair<int, int> &to, Players player) const {
+    auto targetUnit = getFieldPtr(to)->getUnitPtr();
+    return targetUnit && (targetUnit->getPlayer() != player);
+}
+
 bool Game::checkMoveValidation(const std::pair<int, int> &from, const std::pair<int, int> &to,
                                Players currentPlayer) const {
     auto unit = getFieldPtr(from)->getUnitPtr();
