@@ -38,3 +38,9 @@ void Game::printBoard() const {
     }
     cout << endl;
 }
+bool Game::checkMoveValidation(const std::pair<int, int> &from, const std::pair<int, int> &to,
+                               Players currentPlayer) const {
+    auto unit = getFieldPtr(from)->getUnitPtr();
+    return unit && checkMoveInBounds(to) && checkUnitMoveable(unit) && checkDistanceValidation(from, to) &&
+           checkIsOwnUnit(from, currentPlayer);
+}
