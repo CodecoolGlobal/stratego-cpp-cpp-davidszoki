@@ -28,6 +28,38 @@ vector<pair<int, int> > Game::obstacleLocations = {
     pair(4, 2), pair(4, 3), pair(4, 6), pair(4, 7), pair(5, 2), pair(5, 3), pair(5, 6), pair(5, 7)
 };
 
+void Game::run() {
+    initializeBoard();
+    battleField[0][0]->setUnit(make_unique<Flag>(Players::Red));
+    battleField[0][1]->setUnit(make_unique<Bomb>(Players::Red));
+    battleField[0][2]->setUnit(make_unique<Marshal>(Players::Blue));
+    battleField[0][3]->setUnit(make_unique<Miner>(Players::Blue));
+    battleField[1][1]->setUnit(make_unique<Spy>(Players::Blue));
+    battleField[1][0]->setUnit(make_unique<Marshal>(Players::Red));
+    battleField[2][1]->setUnit(make_unique<Flag>(Players::Blue));
+    printBoard();
+
+    Players currentPlayer = Players::Red;
+
+    while (!gameEnded) {
+        pair<int, int> from, to;
+        cout << (currentPlayer == Players::Red ? "Red Player's Turn" : "Blue Player's Turn") << endl;
+
+        cout << "Enter your move (from_x from_y to_x to_y): ";
+        cin >> from.first >> from.second >> to.first >> to.second;
+        if (handleAction(from, to, currentPlayer)) {
+            printBoard();
+
+            if (checkGameOver(Players::Red) || checkGameOver(Players::Blue)) {
+                cout << "Game Over!" << endl;
+                break;
+            }
+
+            currentPlayer = (currentPlayer == Players::Red) ? Players::Blue : Players::Red;
+        }
+    }
+}
+
 bool Game::checkGameOver(Players currentPlayer) {
     if (gameEnded) return true; // Game already ended
     return !canPlayerMove(currentPlayer); // Check if the current player can move
