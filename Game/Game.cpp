@@ -39,6 +39,9 @@ void Game::printBoard() const {
     cout << endl;
 }
 
+void Game::removeUnit(const std::pair<int, int> &field) {
+    getFieldPtr(field)->setUnit(nullptr);
+}
 void Game::handleCapture(const std::pair<int, int> &from, const std::pair<int, int> &to) {
     Field *fromField = getFieldPtr(from);
     Field *toField = getFieldPtr(to);
