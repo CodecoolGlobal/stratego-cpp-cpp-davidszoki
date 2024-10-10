@@ -28,6 +28,11 @@ vector<pair<int, int> > Game::obstacleLocations = {
     pair(4, 2), pair(4, 3), pair(4, 6), pair(4, 7), pair(5, 2), pair(5, 3), pair(5, 6), pair(5, 7)
 };
 
+bool Game::checkGameOver(Players currentPlayer) {
+    if (gameEnded) return true; // Game already ended
+    return !canPlayerMove(currentPlayer); // Check if the current player can move
+}
+
 bool Game::canPlayerMove(Players player) {
     for (int i = 0; i < battleField.size(); ++i) {
         for (int j = 0; j < battleField[i].size(); ++j) {

@@ -20,6 +20,8 @@ public:
 
     void initializeBoard();
 
+    bool checkGameOver(Players currentPlayer);
+
     bool canPlayerMove(Players player);
 
     void printBoard() const;
