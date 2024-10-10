@@ -39,6 +39,25 @@ void Game::printBoard() const {
     cout << endl;
 }
 
+bool Game::checkSpecialCaptureRules(Unit *fromUnit, Unit *toUnit, const std::pair<int, int> &from,
+                                    const std::pair<int, int> &to) {
+    if (!fromUnit || !toUnit) {
+        cout << "Invalid capture attempt." << endl;
+        return false;
+    }
+
+    Ranks fromRank = fromUnit->getRank();
+    Ranks toRank = toUnit->getRank();
+
+    if ((fromRank == Ranks::Spy && toRank == Ranks::Marshal) ||
+        (fromRank == Ranks::Miner && toRank == Ranks::Bomb)) {
+        transferUnit(from, to);
+        cout << (fromRank == Ranks::Spy ? "Spy captures Marshal!" : "Miner disarms Bomb!") << endl;
+        return true;
+    }
+    return false;
+}
+
 void Game::executeStandardCapture(Unit *fromUnit, Unit *toUnit, const std::pair<int, int> &from,
                                   const std::pair<int, int> &to) {
     if (!fromUnit || !toUnit) {
