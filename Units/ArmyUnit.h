@@ -13,4 +13,5 @@ public:
 
     void print() const;
     void setPLayer(Players newPlayer) { player = newPlayer; }
+    void setRank(Ranks newRank) { rank = newRank; }
 };

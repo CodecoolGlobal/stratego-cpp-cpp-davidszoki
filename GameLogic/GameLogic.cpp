@@ -3,24 +3,27 @@
 #include <memory>
 #include <ostream>
 #include <vector>
+
 #include "../Units/ArmyUnit.h"
-#include "../Units/NonSpecailUnit.h"
 
 using namespace std;
 
-GameLogic::GameLogic(Players player): players(player) {
+GameLogic::GameLogic(Players player, Ranks rank, Position position): players(player), ranks(rank), positions(position) {
     initializedBoard();
+    fillUpBoard(player, rank, position);
     printboard();
 }
 
 void GameLogic::initializedBoard() {
     fields = vector(10, vector<shared_ptr<Field>>(10));
-    Position position(2,3);
-    ArmyUnit* colonel = new NonSpecialUnit(Ranks::Colonel, players);
-    shared_ptr<Field> unit = make_shared<Field>(position);
-    unit->setUnit(colonel);
-    fields[2][3] = unit;
 }
+
+void GameLogic::fillUpBoard(Players player, Ranks rank, Position position) {
+    shared_ptr<ArmyUnit> armyUnit = make_shared<ArmyUnit>(rank, player);
+    shared_ptr<Field> unit = make_shared<Field>(position);
+    unit->setUnit(armyUnit);
+}
+
 
 void GameLogic::printboard() {
     for (size_t row = 0; row < fields.size(); ++row) {

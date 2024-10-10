@@ -7,8 +7,9 @@ using namespace std;
 
 int main(int, char **) {
 
-    GameLogic game_logic(Players::Red);
+    GameLogic game_logic(Players{},Ranks{},Position());
     game_logic.initializedBoard();
+    game_logic.fillUpBoard();
     game_logic.printboard();
 
     // UI ui;
