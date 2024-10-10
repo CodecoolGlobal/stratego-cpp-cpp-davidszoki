@@ -22,6 +22,8 @@ public:
 
     void printBoard() const;
 
+    void transferUnit(const std::pair<int, int> &from, const std::pair<int, int> &to);
+
     void removeUnit(const std::pair<int, int> &field);
 
     void handleCapture(const std::pair<int, int> &from, const std::pair<int, int> &to);
