@@ -1,0 +1,40 @@
+#include "Game.h"
+#include <iostream>
+#include <memory>
+#include <ostream>
+#include <utility>
+#include <vector>
+#include "ArmyUnit.h"
+#include "Obstacle.h"
+#include "Bomb.h"
+#include "Marshal.h"
+#include "Miner.h"
+#include "Spy.h"
+#include "Flag.h"
+
+using namespace std;
+
+vector<string> Game::playerUnits = {
+    "Flag", "Spy", "Scout", "Scout", "Scout", "Scout", "Scout", "Scout", "Scout", "Scout", "Miner", "Miner",
+    "Miner", "Miner", "Miner", "Sergeant", "Sergeant", "Sergeant", "Sergeant", "Lieutenant", "Lieutenant",
+    "Lieutenant", "Lieutenant", "Captain", "Captain", "Captain", "Captain", "Major", "Major", "Major", "Colonel",
+    "Colonel", "General", "Marshal",
+    "Bomb", "Bomb", "Bomb", "Bomb", "Bomb", "Bomb"
+};
+
+vector<string> Game::players = {"Red", "Blue"};
+
+vector<pair<int, int> > Game::obstacleLocations = {
+    pair(4, 2), pair(4, 3), pair(4, 6), pair(4, 7), pair(5, 2), pair(5, 3), pair(5, 6), pair(5, 7)
+};
+
+void Game::printBoard() const {
+    for (size_t row = 0; row < battleField.size(); ++row) {
+        for (size_t col = 0; col < battleField[row].size(); ++col) {
+            battleField[row][col]->printField();
+            cout << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
