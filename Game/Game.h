@@ -22,6 +22,8 @@ public:
 
     void printBoard() const;
 
+    Ranks checkFieldUnitRank(const std::pair<int, int> &field) const;
+
     bool checkMoveInBounds(const std::pair<int, int> &to) const;
 
     bool checkUnitMoveable(Unit *unit) const;

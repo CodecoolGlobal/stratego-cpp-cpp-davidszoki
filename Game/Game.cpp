@@ -39,6 +39,13 @@ void Game::printBoard() const {
     cout << endl;
 }
 
+Ranks Game::checkFieldUnitRank(const std::pair<int, int> &field) const {
+    if (const auto unit = getFieldPtr(field)->getUnitPtr()) {
+        return unit->getRank();
+    }
+    return Ranks::None;
+}
+
 bool Game::checkMoveInBounds(const std::pair<int, int> &to) const {
     int boardSize = battleField.size();
     return (to.first >= 0 && to.first < boardSize) &&
