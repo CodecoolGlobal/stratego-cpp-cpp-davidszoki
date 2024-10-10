@@ -14,6 +14,10 @@ public:
         return rank;
     }
 
+    Players getPlayer() {
+        return player;
+    }
+
     Ranks rank;
     Players player;
 };

@@ -7,6 +7,8 @@
 #include "Texture.h"
 #include "../GameLogic/GameLogic.h"
 
+using namespace std;
+
 class GameLogic;
 
 class UI {
@@ -38,13 +40,15 @@ public:
 
     void renderBattlefield();
 
-    void renderStartUnits(std::vector<Ranks> ranks, std::vector<Players> players);
+    void renderStartUnits(std::vector<Ranks> ranks, Players player);
 
     void renderTexture(Texture &texture, SDL_Rect &rect, int width, int height, int x, int y);
 
     void handleStartQuitEvent(bool &start, bool &quit);
 
     void handleUnitStartPlace(bool &quit);
+
+    void renderBoard(vector<vector<SDL_UnitRect*>> unitRects);
 
 private:
     SDL_Window *window;

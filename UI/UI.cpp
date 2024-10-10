@@ -43,7 +43,6 @@ Texture UI::loadTexture(const string &filename) {
     if (nullptr == imgTexture) {
         printf("File not found: %s SDL_image Error: %s\n", filename.c_str(), IMG_GetError());
     }
-
     return Texture(imgTexture);
 }
 
@@ -84,11 +83,19 @@ void UI::run(vector<Ranks> ranks, vector<Players> players) {
     init();
 
     while (!startQuit.second) {
+        bool battleFieldHasChanged;
         handleStartQuitEvent(startQuit.first, startQuit.second);
         if (!startQuit.first) {
             renderStart();
         } else {
-            renderBattleStart(ranks, players, startQuit.second);
+            if(!gameLogic->inGame) {
+                renderBattleStart(ranks, players, startQuit.second);
+            }
+            SDL_RenderClear(renderer);
+            renderBattlefield();
+            renderBoard(gameLogic->getBoardData());
+            SDL_RenderPresent(renderer);
+            startQuit.second = false;
         }
     }
 }
@@ -98,7 +105,7 @@ void UI::renderBattleStart(vector<Ranks> ranks, vector<Players> players, bool &q
     SDL_SetRenderDrawColor(renderer, 53, 24, 6, 0);
 
     renderBattlefield();
-    renderStartUnits(ranks, players);
+    renderStartUnits(ranks, Players::Red);
     handleUnitStartPlace(quit);
     SDL_RenderPresent(renderer);
 }
@@ -131,14 +138,19 @@ void UI::renderStart() {
     SDL_RenderPresent(renderer);
 }
 
-void UI::renderUnit(SDL_UnitRect &unitRect) {
+/*void UI::renderUnit(SDL_UnitRect &unitRect) {
     Texture unitImage = loadTexture(path + "Units\\" + toString(unitRect.player) + toString(unitRect.rank) + ".bmp");
     unitImage.render(renderer, &unitRect);
-}
+}*/
 
 void UI::renderUnit(SDL_UnitRect *unitRect) {
-    Texture unitImage = loadTexture(path + "Units\\" + toString(unitRect->player) + toString(unitRect->rank) + ".bmp");
-    unitImage.render(renderer, unitRect);
+    if (unitRect->player == gameLogic->getActualPLayer()) {
+        Texture unitImage = loadTexture(path + "Units\\" + toString(unitRect->player) + toString(unitRect->rank) + ".bmp");
+        unitImage.render(renderer, unitRect);
+    } else {
+        Texture unitImage = loadTexture(path + "Units\\" + toString(unitRect->player) + "Back.bmp");
+        unitImage.render(renderer, unitRect);
+    }
 }
 
 void UI::renderUnits() {
@@ -148,16 +160,16 @@ void UI::renderUnits() {
     }
 }
 
-void UI::renderStartUnits(vector<Ranks> ranks, vector<Players> players) {
+void UI::renderStartUnits(vector<Ranks> ranks, Players player) {
+    gameLogic->setActualPLayer(player);
     int xPos = 820;
     int yPos = 180;
 
-    int numUnits = ranks.size() * players.size();
+    int numUnits = ranks.size();
     unitRects.resize(numUnits);
 
     int i = 0; // Unit counter
 
-    for (const auto player: players) {
         for (const auto &rank: ranks) {
             //Texture unitImage = loadTexture(path + "Units\\" + player + rank + ".bmp"); // Assuming file format
 
@@ -180,7 +192,7 @@ void UI::renderStartUnits(vector<Ranks> ranks, vector<Players> players) {
 
             i++;
         }
-    }
+
     /*for (SDL_UnitRect rect : unitRects) {
         cout << rect.getRank() << "\n";
     }*/
@@ -228,6 +240,7 @@ void UI::handleUnitStartPlace(bool &quit) {
     SDL_Point originalPosition; // Original position of the rectangle
     int originX = -1;
     int originY = -1;
+    gameLogic->inGame = false;
 
     while (!quit) {
         // Main event loop for the placement phase
@@ -267,6 +280,23 @@ void UI::handleUnitStartPlace(bool &quit) {
                     }
                     if(isFull) {
                         gameLogic->copyArmyToBoard(units);
+                        //clear red units
+                        unitRects.clear();
+                        for (vector<SDL_UnitRect*>& rects : units) {
+                            for(SDL_UnitRect*& rect : rects) {
+                               rect = nullptr;
+                            }
+                        }
+                        if(gameLogic->getActualPLayer() == Players::Red) {
+                            gameLogic->setActualPLayer(Players::Blue);
+                            renderStartUnits(gameLogic->getRanks(), Players::Blue);
+                        } else {
+                            gameLogic->setActualPLayer(Players::Red);
+                            SDL_RenderClear(renderer);
+                            renderBoard(gameLogic->getBoardData());
+                            gameLogic->inGame = true;
+                            quit = true;
+                        }
                     }
                 }
             } else if (e.type == SDL_MOUSEMOTION && isDragging && selectedRect != nullptr) {
@@ -276,7 +306,7 @@ void UI::handleUnitStartPlace(bool &quit) {
 
                 selectedRect->x = mouseX - selectedRect->w / 2;
                 selectedRect->y = mouseY - selectedRect->h / 2;
-                std::cout << "Dragging unit to (" << selectedRect->x << ", " << selectedRect->y << ")" << std::endl;
+                //std::cout << "Dragging unit to (" << selectedRect->x << ", " << selectedRect->y << ")" << std::endl;
             } else if (e.type == SDL_MOUSEBUTTONUP && isDragging) {
                 int mouseX = e.button.x;
                 int mouseY = e.button.y;
@@ -354,9 +384,9 @@ void UI::handleUnitStartPlace(bool &quit) {
         // Clear the screen
         SDL_SetRenderDrawColor(renderer, 53, 24, 6, 0); // Background color
         SDL_RenderClear(renderer);
-
         renderBattlefield();
         renderUnits();
+
 
         // Draw the selected rectangle last to ensure it’s on top
         if (selectedRect != nullptr) {
@@ -375,7 +405,6 @@ void UI::handleUnitStartPlace(bool &quit) {
                 SDL_RenderDrawRect(renderer, &highlightRect);
             }
         }
-
         // Present the updated renderer
         SDL_RenderPresent(renderer);
 
@@ -397,6 +426,19 @@ void UI::printRectVector() {
         cout << endl;
     }
 
+}
+
+void UI::renderBoard(vector<vector<SDL_UnitRect*>> unitRects) {
+    for(size_t row = 0; row < unitRects.size(); row++) {
+        for (size_t column = 0; column < unitRects[row].size(); column++) {
+            if(unitRects[row][column] != nullptr) {
+                renderUnit(unitRects[row][column]);
+                cout << unitRects[row][column]->getRank() << unitRects[row][column]->getPlayer();
+            }
+            else cout << "empty";
+        }
+        cout << "\n";
+    }
 }
 
 

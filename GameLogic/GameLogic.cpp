@@ -15,17 +15,6 @@
 
 using namespace std;
 
-vector ranks = {
-    Ranks::Flag, Ranks::Spy, Ranks::Scout, Ranks::Scout, Ranks::Scout, Ranks::Scout, Ranks::Scout, Ranks::Scout,
-    Ranks::Scout, Ranks::Scout, Ranks::Miner, Ranks::Miner,
-    Ranks::Miner, Ranks::Miner, Ranks::Miner, Ranks::Sergeant, Ranks::Sergeant, Ranks::Sergeant, Ranks::Sergeant,
-    Ranks::Sergeant, Ranks::Sergeant,
-    Ranks::Lieutenant, Ranks::Lieutenant, Ranks::Captain, Ranks::Captain, Ranks::Captain, Ranks::Captain, Ranks::Major,
-    Ranks::Major, Ranks::Major, Ranks::Colonel,
-    Ranks::Colonel, Ranks::General, Ranks::Marshal,
-    Ranks::Bomb, Ranks::Bomb, Ranks::Bomb, Ranks::Bomb, Ranks::Bomb, Ranks::Bomb
-};
-
 vector players = {Players::Red, Players::Blue};
 
 GameLogic::GameLogic() {
@@ -49,17 +38,24 @@ void GameLogic::initializeBoard() {
             fields[i][j] = std::make_shared<Field>(i * 10 + j); // Assign shared_ptr to each Field
         }
     }
+    actualRects.resize(10);
     for (int i = 0; i < 10; ++i) {
+        actualRects[i].resize(10);
+        for (int j = 0; j < 10; ++j) {
+            actualRects[i][j] = nullptr; // Assign shared_ptr to each Field
+        }
+    }
+    /*for (int i = 0; i < 10; ++i) {
         for (int j = 0; j < 10; ++j) {
             cout << fields[i][j]->getId() << " "; // Assign shared_ptr to each Field
         }
         cout << "\n";
-    }
+    }*/
 }
 
 void GameLogic::printBoard() {
-    for (size_t row = 0; row < fields.size(); ++row) {
-        for (size_t col = 0; col < fields[row].size(); ++col) {
+    for (size_t row = 0; row < fields.size(); row++) {
+        for (size_t col = 0; col < fields[row].size(); col++) {
             if (fields[row][col]->getUnit()) {
                 fields[row][col]->printField();
             } else {
@@ -84,11 +80,11 @@ void GameLogic::copyArmyToBoard(vector<vector<SDL_UnitRect *> > rects) {
         }
         cout << endl;
     }
-    for (size_t row = 0; row < rects.size(); ++row) {
+    for (size_t row = 0; row < rects.size(); row++) {
         Players players = rects[0][0]->player;
-        for (size_t col = 0; col < rects[row].size(); ++col) {
+        for (size_t column = 0; column < rects[row].size(); column++) {
             Unit *unit = nullptr;
-            switch (rects[row][col]->rank) {
+            switch (rects[row][column]->rank) {
                 case Ranks::Bomb: {
                     unit = new Bomb(players);
                 } break;
@@ -127,11 +123,44 @@ void GameLogic::copyArmyToBoard(vector<vector<SDL_UnitRect *> > rects) {
                 }
             }
             if (rects[0][0]->player == Players::Red) {
-                fields[row + 6][col]->setUnit(unit);
+                fields[row + 6][column]->setUnit(unit);
             } else {
-                fields[9 - row][9 - col]->setUnit(unit);
+                fields[9 - (row + 6)][9 - column]->setUnit(unit);
             }
         }
     }
     printBoard();
+}
+
+std::vector<Ranks> GameLogic::getRanks() {
+    return ranks;
+}
+
+void GameLogic::setActualPLayer(const Players player) {
+    this->actualPlayer = player;
+}
+
+Players GameLogic::getActualPLayer() {
+    return this->actualPlayer;
+}
+
+vector<vector<SDL_UnitRect*>> GameLogic::getBoardData() {
+    for(size_t row = 0; row < fields.size(); row++) {
+        for (size_t column = 0; column < fields[row].size(); column++) {
+            SDL_UnitRect* unitRect = new SDL_UnitRect();
+            auto* armyUnit = dynamic_cast<ArmyUnit*>(fields[row][column]->getUnit());
+            if(armyUnit != nullptr){
+                (*unitRect).player = armyUnit->getPlayer();
+                (*unitRect).rank = armyUnit->getRank();
+                (*unitRect).h = 70;
+                (*unitRect).w = 70;
+                (*unitRect).x = 16 + column * 80;
+                (*unitRect).y = 16 + row * 80;
+                actualRects[row][column] = unitRect;
+            } else {
+                actualRects[row][column] = nullptr;
+            }
+        }
+    }
+    return  actualRects;
 }
