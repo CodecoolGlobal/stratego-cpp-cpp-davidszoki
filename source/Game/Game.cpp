@@ -123,11 +123,13 @@ bool Game::checkUnitPlaceInBounds(const pair<int, int> &to) {
 }
 
 Field *Game::getFieldPtr(const std::pair<int, int> &field) const {
-    if (field.first < 0 || field.first >= battleField.size() ||
-        field.second < 0 || field.second >= battleField[0].size()) {
+    /*if (field.first < 0 && field.first >= battleField.size() &&
+        field.second < 0 && field.second >= battleField[0].size()) {
         return nullptr; // Out of bounds check
-    }
-    return battleField[field.first][field.second].get();
+    }*/
+    if (!checkMoveInBounds(field))
+        return nullptr;
+    return battleField[field.second][field.first].get();
 }
 
 void Game::transferUnit(const std::pair<int, int> &from, const std::pair<int, int> &to) {
@@ -139,6 +141,9 @@ void Game::removeUnit(const std::pair<int, int> &field) {
     getFieldPtr(field)->setUnit(nullptr);
 }
 
+void Game::removeUnit(const SDL_Point &field) {
+    getFieldPtr({field.x, field.y})->setUnit(nullptr);
+}
 
 void Game::middleMirrorBattlefield() {
     const int n = battleField.size();
