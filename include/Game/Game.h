@@ -1,20 +1,15 @@
 #pragma once
-#include <memory>
-#include <vector>
-#include "Field.h"
-#include "UI.h"
+#include <IGame.h>
+#include <Field.h>
+#include <UI.h>
 
-class Game {
-    static std::vector<std::string> players;
-    static std::vector<std::string> playerUnits;
-    static std::vector<std::pair<int, int> > obstacleLocations;
-    std::vector<std::vector<std::unique_ptr<Field> > > battleField;
-    bool gameEnded;
+class Game : public IGame {
     UI ui;
 
 public:
-    Game() : gameEnded(false) {
-    }
+    Game();
+
+    ~Game() = default;
 
     void run();
 
