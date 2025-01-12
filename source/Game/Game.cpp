@@ -271,8 +271,8 @@ Ranks Game::checkFieldUnitRank(const std::pair<int, int> &field) const {
 
 bool Game::checkMoveInBounds(const std::pair<int, int> &to) const {
     int boardSize = battleField.size();
-    return (to.first >= 0 && to.first < boardSize) &&
-           (to.second >= 0 && to.second < boardSize);
+    return to.first >= 0 && to.first < boardSize &&
+           to.second >= 0 && to.second < boardSize;
 }
 
 bool Game::checkUnitMoveable(Unit *unit) const {
