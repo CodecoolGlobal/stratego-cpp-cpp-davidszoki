@@ -139,6 +139,16 @@ void Game::removeUnit(const std::pair<int, int> &field) {
     getFieldPtr(field)->setUnit(nullptr);
 }
 
+
+void Game::middleMirrorBattlefield() {
+    const int n = battleField.size();
+    reverse(battleField.begin(), battleField.end());
+
+    for (int i = 0; i < n; i++) {
+        reverse(battleField[i].begin(), battleField[i].end());
+    }
+}
+
 bool Game::handleAction(const pair<int, int> &from, const pair<int, int> &to, Players currentPlayer) {
     Unit *unit = getFieldPtr(from)->getUnitPtr();
     if (!unit) {

@@ -33,6 +33,8 @@ public:
 
     void resetGame() override;
 
+    void middleMirrorBattlefield() override;
+
     Field *getFieldPtr(const std::pair<int, int> &field) const;
 
     bool handleAction(const std::pair<int, int> &from, const std::pair<int, int> &to, Players currentPlayer);
