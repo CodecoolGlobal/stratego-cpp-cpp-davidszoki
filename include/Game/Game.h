@@ -21,6 +21,8 @@ public:
 
     void printBoard() const;
 
+    void placeUnit(const std::pair<int, int> &to, const Players &player, const Ranks &rank);
+
 
     void resetGame() override;
 

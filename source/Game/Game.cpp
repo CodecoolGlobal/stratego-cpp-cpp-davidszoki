@@ -110,6 +110,11 @@ void Game::printBoard() const {
     cout << endl;
 }
 
+void Game::placeUnit(const pair<int, int> &to, const Players &player, const Ranks &rank) {
+    const auto unit = make_shared<ArmyUnit>(player, rank);
+    battleField[to.second][to.first]->setUnit(unit);
+}
+
 Field *Game::getFieldPtr(const std::pair<int, int> &field) const {
     if (field.first < 0 || field.first >= battleField.size() ||
         field.second < 0 || field.second >= battleField[0].size()) {
