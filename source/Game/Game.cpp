@@ -74,12 +74,12 @@ void Game::initializeBoard() {
     for (int i = 0; i < battleField.size(); i++) {
         battleField[i].resize(10);
         for (int j = 0; j < battleField[i].size(); j++) {
-            battleField[i][j] = make_unique<Field>(); // Explicitly initialize each position to nullptr
+            battleField[i][j] = make_shared<Field>(); // Explicitly initialize each position to nullptr
         }
     }
 
     for (const auto [x, y]: obstacleLocations) {
-        battleField[x][y]->setUnit(make_unique<Obstacle>());
+        battleField[x][y]->setUnit(make_shared<Obstacle>());
     }
 }
 
