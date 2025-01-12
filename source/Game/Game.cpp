@@ -1,48 +1,40 @@
-#include "Game.h"
+#include <algorithm>
+#include <Game.h>
 #include <iostream>
 #include <memory>
 #include <ostream>
 #include <utility>
 #include <vector>
-#include "ArmyUnit.h"
-#include "Obstacle.h"
-#include "Bomb.h"
-#include "Marshal.h"
-#include "Miner.h"
-#include "Spy.h"
-#include "Flag.h"
+#include <ArmyUnit.h>
+#include <Obstacle.h>
+#include <Bomb.h>
+#include <Marshal.h>
+#include <Miner.h>
+#include <Spy.h>
+#include <Flag.h>
 
 using namespace std;
 
-vector<string> Game::playerUnits = {
-    "Flag", "Spy", "Scout", "Scout", "Scout", "Scout", "Scout", "Scout", "Scout", "Scout", "Miner", "Miner",
-    "Miner", "Miner", "Miner", "Sergeant", "Sergeant", "Sergeant", "Sergeant", "Lieutenant", "Lieutenant",
-    "Lieutenant", "Lieutenant", "Captain", "Captain", "Captain", "Captain", "Major", "Major", "Major", "Colonel",
-    "Colonel", "General", "Marshal",
-    "Bomb", "Bomb", "Bomb", "Bomb", "Bomb", "Bomb"
-};
-
-vector<string> Game::players = {"Red", "Blue"};
-
-vector<pair<int, int> > Game::obstacleLocations = {
-    pair(4, 2), pair(4, 3), pair(4, 6), pair(4, 7), pair(5, 2), pair(5, 3), pair(5, 6), pair(5, 7)
-};
+Game::Game() : ui(*this) {
+    initializeBoard();
+}
 
 void Game::run() {
-    initializeBoard();
-    battleField[0][0]->setUnit(make_unique<Flag>(Players::Red));
-    battleField[0][1]->setUnit(make_unique<Bomb>(Players::Red));
-    battleField[0][2]->setUnit(make_unique<Marshal>(Players::Blue));
-    battleField[0][3]->setUnit(make_unique<Miner>(Players::Blue));
-    battleField[1][1]->setUnit(make_unique<Spy>(Players::Blue));
-    battleField[1][0]->setUnit(make_unique<Marshal>(Players::Red));
-    battleField[2][1]->setUnit(make_unique<Flag>(Players::Blue));
-    printBoard();
-
-    Players currentPlayer = Players::Red;
+    ui.init();
 
     while (!gameEnded) {
-        pair<int, int> from, to;
+        ui.handleEvents(gameEnded, gameStart, unitPlacement, currentPlayer, playerUnits);
+        if (!gameStart)
+            ui.renderMenuUI();
+        else {
+            if (!unitPlacement) {
+                ui.renderUnitPlacement(currentPlayer, playerUnits);
+            } else {
+                ui.renderBattlefield(currentPlayer);
+            }
+        }
+
+        /*pair<int, int> from, to;
         cout << (currentPlayer == Players::Red ? "Red Player's Turn" : "Blue Player's Turn") << endl;
 
         cout << "Enter your move (from_x from_y to_x to_y): ";
@@ -56,7 +48,7 @@ void Game::run() {
             }
 
             currentPlayer = (currentPlayer == Players::Red) ? Players::Blue : Players::Red;
-        }
+        }*/
     }
 }
 
@@ -82,13 +74,29 @@ void Game::initializeBoard() {
     for (int i = 0; i < battleField.size(); i++) {
         battleField[i].resize(10);
         for (int j = 0; j < battleField[i].size(); j++) {
-            battleField[i][j] = make_unique<Field>(); // Explicitly initialize each position to nullptr
+            battleField[i][j] = make_shared<Field>(); // Explicitly initialize each position to nullptr
         }
     }
 
     for (const auto [x, y]: obstacleLocations) {
-        battleField[x][y]->setUnit(make_unique<Obstacle>());
+        battleField[x][y]->setUnit(make_shared<Obstacle>());
     }
+
+    /*battleField[0][0]->setUnit(make_unique<Flag>(Players::Red));
+    battleField[0][1]->setUnit(make_unique<Bomb>(Players::Red));
+    battleField[0][2]->setUnit(make_unique<Marshal>(Players::Blue));
+    battleField[0][3]->setUnit(make_unique<Miner>(Players::Blue));
+    battleField[1][1]->setUnit(make_unique<Spy>(Players::Blue));
+    battleField[1][0]->setUnit(make_unique<Marshal>(Players::Red));
+    battleField[2][1]->setUnit(make_unique<Flag>(Players::Blue));*/
+}
+
+void Game::resetGame() {
+    initializeBoard();
+    currentPlayer = Players::Red;
+    gameEnded = false;
+    unitPlacement = false;
+    gameStart = false;
 }
 
 void Game::printBoard() const {
@@ -102,12 +110,32 @@ void Game::printBoard() const {
     cout << endl;
 }
 
+void Game::placeUnit(const pair<int, int> &to, const Players &player, const Ranks &rank) {
+    const auto unit = make_shared<ArmyUnit>(player, rank);
+    battleField[to.second][to.first]->setUnit(unit);
+}
+
+bool Game::checkUnitPlaceInBounds(const pair<int, int> &to) {
+    if (to.first >= 0 && to.first < battleField[0].size() && to.second >= 0 && to.
+        second < battleField.size() && checkTargetFieldEmpty(to))
+        return true;
+    return false;
+}
+
+void Game::changePlayer(Players &currentPlayer) {
+    /*if (currentPlayer == Players::Red)
+      middleMirrorBattlefield();*/
+    currentPlayer = currentPlayer == Players::Red ? Players::Blue : Players::Red;
+}
+
 Field *Game::getFieldPtr(const std::pair<int, int> &field) const {
-    if (field.first < 0 || field.first >= battleField.size() ||
-        field.second < 0 || field.second >= battleField[0].size()) {
+    /*if (field.first < 0 && field.first >= battleField.size() &&
+        field.second < 0 && field.second >= battleField[0].size()) {
         return nullptr; // Out of bounds check
-    }
-    return battleField[field.first][field.second].get();
+    }*/
+    if (!checkMoveInBounds(field))
+        return nullptr;
+    return battleField[field.second][field.first].get();
 }
 
 void Game::transferUnit(const std::pair<int, int> &from, const std::pair<int, int> &to) {
@@ -117,6 +145,19 @@ void Game::transferUnit(const std::pair<int, int> &from, const std::pair<int, in
 
 void Game::removeUnit(const std::pair<int, int> &field) {
     getFieldPtr(field)->setUnit(nullptr);
+}
+
+void Game::removeUnit(const SDL_Point &field) {
+    getFieldPtr({field.x, field.y})->setUnit(nullptr);
+}
+
+void Game::middleMirrorBattlefield() {
+    const int n = battleField.size();
+    reverse(battleField.begin(), battleField.end());
+
+    for (int i = 0; i < n; i++) {
+        reverse(battleField[i].begin(), battleField[i].end());
+    }
 }
 
 bool Game::handleAction(const pair<int, int> &from, const pair<int, int> &to, Players currentPlayer) {
@@ -230,8 +271,8 @@ Ranks Game::checkFieldUnitRank(const std::pair<int, int> &field) const {
 
 bool Game::checkMoveInBounds(const std::pair<int, int> &to) const {
     int boardSize = battleField.size();
-    return (to.first >= 0 && to.first < boardSize) &&
-           (to.second >= 0 && to.second < boardSize);
+    return to.first >= 0 && to.first < boardSize &&
+           to.second >= 0 && to.second < boardSize;
 }
 
 bool Game::checkUnitMoveable(Unit *unit) const {

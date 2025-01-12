@@ -19,6 +19,7 @@ inline std::string toString(const Ranks& rank) {
         case Ranks::General: return "General";
         case Ranks::Marshal: return "Marshal";
         case Ranks::Bomb: return "Bomb";
+        case Ranks::None: return "None";
         default: return "Unknown Rank";
     }
 }

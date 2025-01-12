@@ -1,20 +1,15 @@
 #pragma once
-#include <memory>
-#include <vector>
-#include "Field.h"
-#include "UI.h"
+#include <IGame.h>
+#include <Field.h>
+#include <UI.h>
 
-class Game {
-    static std::vector<std::string> players;
-    static std::vector<std::string> playerUnits;
-    static std::vector<std::pair<int, int> > obstacleLocations;
-    std::vector<std::vector<std::unique_ptr<Field> > > battleField;
-    bool gameEnded;
+class Game : public IGame {
     UI ui;
 
 public:
-    Game() : gameEnded(false) {
-    }
+    Game();
+
+    ~Game() = default;
 
     void run();
 
@@ -26,13 +21,25 @@ public:
 
     void printBoard() const;
 
+    void placeUnit(const std::pair<int, int> &to, const Players &player, const Ranks &rank);
+
+    bool checkUnitPlaceInBounds(const std::pair<int, int> &to) override;
+
+    void removeUnit(const std::pair<int, int> &field) override;
+
+    void removeUnit(const SDL_Point &field) override;
+
+    void changePlayer(Players &currentPlayer) override;
+
+    void resetGame() override;
+
+    void middleMirrorBattlefield() override;
+
     Field *getFieldPtr(const std::pair<int, int> &field) const;
 
     bool handleAction(const std::pair<int, int> &from, const std::pair<int, int> &to, Players currentPlayer);
 
     void transferUnit(const std::pair<int, int> &from, const std::pair<int, int> &to);
-
-    void removeUnit(const std::pair<int, int> &field);
 
     void handleCapture(const std::pair<int, int> &from, const std::pair<int, int> &to);
 
@@ -44,7 +51,7 @@ public:
 
     Ranks checkFieldUnitRank(const std::pair<int, int> &field) const;
 
-    bool checkMoveInBounds(const std::pair<int, int> &to) const;
+    bool checkMoveInBounds(const std::pair<int, int> &to) const override;
 
     bool checkUnitMoveable(Unit *unit) const;
 

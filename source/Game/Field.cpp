@@ -1,10 +1,10 @@
-#include "Field.h"
+#include <Field.h>
 #include <iostream>
 #include <memory>
 #include <utility>
-#include "Unit.h"
-#include "ArmyUnit.h"
-#include "Obstacle.h"
+#include <Unit.h>
+#include <ArmyUnit.h>
+#include <Obstacle.h>
 using namespace std;
 
 void Field::printField() const {
@@ -21,6 +21,6 @@ void Field::printField() const {
     }
 }
 
-void Field::setUnit(unique_ptr<Unit> unit) {
-    this->unit = std::move(unit);
+void Field::setUnit(const shared_ptr<Unit> &unit) {
+    this->unit = unit;
 }
