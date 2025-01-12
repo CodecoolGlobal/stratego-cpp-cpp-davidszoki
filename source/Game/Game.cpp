@@ -122,6 +122,12 @@ bool Game::checkUnitPlaceInBounds(const pair<int, int> &to) {
     return false;
 }
 
+void Game::changePlayer(Players &currentPlayer) {
+    /*if (currentPlayer == Players::Red)
+      middleMirrorBattlefield();*/
+    currentPlayer = currentPlayer == Players::Red ? Players::Blue : Players::Red;
+}
+
 Field *Game::getFieldPtr(const std::pair<int, int> &field) const {
     /*if (field.first < 0 && field.first >= battleField.size() &&
         field.second < 0 && field.second >= battleField[0].size()) {

@@ -22,7 +22,7 @@ public:
     void printBoard() const;
 
     void placeUnit(const std::pair<int, int> &to, const Players &player, const Ranks &rank);
-    
+
     bool checkUnitPlaceInBounds(const std::pair<int, int> &to) override;
 
     void removeUnit(const std::pair<int, int> &field) override;
@@ -40,8 +40,6 @@ public:
     bool handleAction(const std::pair<int, int> &from, const std::pair<int, int> &to, Players currentPlayer);
 
     void transferUnit(const std::pair<int, int> &from, const std::pair<int, int> &to);
-
-    void removeUnit(const std::pair<int, int> &field);
 
     void handleCapture(const std::pair<int, int> &from, const std::pair<int, int> &to);
 
