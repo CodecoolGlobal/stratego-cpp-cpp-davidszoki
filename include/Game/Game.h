@@ -22,7 +22,14 @@ public:
     void printBoard() const;
 
     void placeUnit(const std::pair<int, int> &to, const Players &player, const Ranks &rank);
+    
+    bool checkUnitPlaceInBounds(const std::pair<int, int> &to) override;
 
+    void removeUnit(const std::pair<int, int> &field) override;
+
+    void removeUnit(const SDL_Point &field) override;
+
+    void changePlayer(Players &currentPlayer) override;
 
     void resetGame() override;
 

@@ -115,6 +115,13 @@ void Game::placeUnit(const pair<int, int> &to, const Players &player, const Rank
     battleField[to.second][to.first]->setUnit(unit);
 }
 
+bool Game::checkUnitPlaceInBounds(const pair<int, int> &to) {
+    if (to.first >= 0 && to.first < battleField[0].size() && to.second >= 0 && to.
+        second < battleField.size() && checkTargetFieldEmpty(to))
+        return true;
+    return false;
+}
+
 Field *Game::getFieldPtr(const std::pair<int, int> &field) const {
     if (field.first < 0 || field.first >= battleField.size() ||
         field.second < 0 || field.second >= battleField[0].size()) {
