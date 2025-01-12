@@ -81,6 +81,22 @@ void Game::initializeBoard() {
     for (const auto [x, y]: obstacleLocations) {
         battleField[x][y]->setUnit(make_shared<Obstacle>());
     }
+
+    /*battleField[0][0]->setUnit(make_unique<Flag>(Players::Red));
+    battleField[0][1]->setUnit(make_unique<Bomb>(Players::Red));
+    battleField[0][2]->setUnit(make_unique<Marshal>(Players::Blue));
+    battleField[0][3]->setUnit(make_unique<Miner>(Players::Blue));
+    battleField[1][1]->setUnit(make_unique<Spy>(Players::Blue));
+    battleField[1][0]->setUnit(make_unique<Marshal>(Players::Red));
+    battleField[2][1]->setUnit(make_unique<Flag>(Players::Blue));*/
+}
+
+void Game::resetGame() {
+    initializeBoard();
+    currentPlayer = Players::Red;
+    gameEnded = false;
+    unitPlacement = false;
+    gameStart = false;
 }
 
 void Game::printBoard() const {
