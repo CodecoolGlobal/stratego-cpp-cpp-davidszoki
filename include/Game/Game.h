@@ -51,7 +51,7 @@ public:
 
     Ranks checkFieldUnitRank(const std::pair<int, int> &field) const;
 
-    bool checkMoveInBounds(const std::pair<int, int> &to) const;
+    bool checkMoveInBounds(const std::pair<int, int> &to) const override;
 
     bool checkUnitMoveable(Unit *unit) const;
 
