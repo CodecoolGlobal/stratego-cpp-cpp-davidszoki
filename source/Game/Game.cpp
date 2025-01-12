@@ -19,10 +19,22 @@ Game::Game() : ui(*this) {
     initializeBoard();
 }
 
-    Players currentPlayer = Players::Red;
+void Game::run() {
+    ui.init();
 
     while (!gameEnded) {
-        pair<int, int> from, to;
+        ui.handleEvents(gameEnded, gameStart, unitPlacement, currentPlayer, playerUnits);
+        if (!gameStart)
+            ui.renderMenuUI();
+        else {
+            if (!unitPlacement) {
+                ui.renderUnitPlacement(currentPlayer, playerUnits);
+            } else {
+                ui.renderBattlefield(currentPlayer);
+            }
+        }
+
+        /*pair<int, int> from, to;
         cout << (currentPlayer == Players::Red ? "Red Player's Turn" : "Blue Player's Turn") << endl;
 
         cout << "Enter your move (from_x from_y to_x to_y): ";
@@ -36,7 +48,7 @@ Game::Game() : ui(*this) {
             }
 
             currentPlayer = (currentPlayer == Players::Red) ? Players::Blue : Players::Red;
-        }
+        }*/
     }
 }
 
