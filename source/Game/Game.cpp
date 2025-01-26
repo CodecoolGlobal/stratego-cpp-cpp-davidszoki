@@ -77,14 +77,6 @@ void Game::initializeBoard() {
     for (const auto [x, y]: obstacleLocations) {
         battleField[x][y]->setUnit(make_shared<Obstacle>());
     }
-
-    /*battleField[0][0]->setUnit(make_unique<Flag>(Players::Red));
-    battleField[0][1]->setUnit(make_unique<Bomb>(Players::Red));
-    battleField[0][2]->setUnit(make_unique<Marshal>(Players::Blue));
-    battleField[0][3]->setUnit(make_unique<Miner>(Players::Blue));
-    battleField[1][1]->setUnit(make_unique<Spy>(Players::Blue));
-    battleField[1][0]->setUnit(make_unique<Marshal>(Players::Red));
-    battleField[2][1]->setUnit(make_unique<Flag>(Players::Blue));*/
 }
 
 void Game::resetGame() {
@@ -119,16 +111,10 @@ bool Game::checkUnitPlaceInBounds(const pair<int, int> &to) {
 }
 
 void Game::changePlayer(Players &currentPlayer) {
-    /*if (currentPlayer == Players::Red)
-      middleMirrorBattlefield();*/
     currentPlayer = currentPlayer == Players::Red ? Players::Blue : Players::Red;
 }
 
 Field *Game::getFieldPtr(const std::pair<int, int> &field) const {
-    /*if (field.first < 0 && field.first >= battleField.size() &&
-        field.second < 0 && field.second >= battleField[0].size()) {
-        return nullptr; // Out of bounds check
-    }*/
     if (!checkMoveInBounds(field))
         return nullptr;
     return battleField[field.second][field.first].get();
