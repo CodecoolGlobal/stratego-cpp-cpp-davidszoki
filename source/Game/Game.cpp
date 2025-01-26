@@ -32,23 +32,18 @@ void Game::run() {
             } else {
                 ui.renderBattlefield(currentPlayer);
             }
+
+            /*if (handleAction(movement.first, movement.second, currentPlayer)) {
+                //printBoard();
+
+                if (checkGameOver(currentPlayer)) {
+                    cout << "Game Over!" << endl;
+                    break;
+                }
+                currentPlayer = (currentPlayer == Players::Red) ? Players::Blue : Players::Red;
+                //ui.drawBattlefieldUnits(currentPlayer);
+            }*/
         }
-
-        /*pair<int, int> from, to;
-        cout << (currentPlayer == Players::Red ? "Red Player's Turn" : "Blue Player's Turn") << endl;
-
-        cout << "Enter your move (from_x from_y to_x to_y): ";
-        cin >> from.first >> from.second >> to.first >> to.second;
-        if (handleAction(from, to, currentPlayer)) {
-            printBoard();
-
-            if (checkGameOver(Players::Red) || checkGameOver(Players::Blue)) {
-                cout << "Game Over!" << endl;
-                break;
-            }
-
-            currentPlayer = (currentPlayer == Players::Red) ? Players::Blue : Players::Red;
-        }*/
     }
 }
 
