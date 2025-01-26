@@ -442,17 +442,17 @@ void UI::handleMouseUpEvent(const SDL_Event &e, SDL_Point &originalPosition,
 }
 
 SDL_Point UI::calculateGridPosition(const SDL_Point &position, const Players &currentPlayer) const {
-    if (currentPlayer == Players::Blue)
+    if (!game.getUnitPlacement())
         return {
-            (position.x / (battlefieldRect.w / 10) * (battlefieldRect.w / 10) + 16) / 80,
-            (position.y / (battlefieldRect.h / 10) * (battlefieldRect.h / 10) + 16) / 80
+            battlefieldRect.w / 80 - 1 - (position.x + 10) / 80,
+            position.y - 490 < 0 ? -1 : battlefieldRect.h / 80 - 1 - (position.y + 10) / 80
         };
-
     return {
-        battlefieldRect.w / 80 - 1 - (originalPosition.x + 10) / 80,
-        originalPosition.y - 490 < 0 ? -1 : battlefieldRect.h / 80 - 1 - (originalPosition.y + 10) / 80
+        (position.x / (battlefieldRect.w / 10) * (battlefieldRect.w / 10) + 16) / 80,
+        (position.y / (battlefieldRect.h / 10) * (battlefieldRect.h / 10) + 16) / 80
     };
 }
+
 
 SDL_Point UI::snapToGrid(const int mouseX, const int mouseY) const {
     const int snapX = mouseX / (battlefieldRect.w / game.getGridSize()) * (battlefieldRect.w / game.getGridSize()) + 16;
