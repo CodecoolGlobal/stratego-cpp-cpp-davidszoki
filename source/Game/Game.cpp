@@ -309,9 +309,18 @@ bool Game::checkTargetFieldHasEnemyUnit(const std::pair<int, int> &to, Players p
     return targetUnit && (targetUnit->getPlayer() != player);
 }
 
+bool Game::checkTargetFieldObstacle(const std::pair<int, int> &to) const {
+    auto targetUnit = getFieldPtr(to)->getUnitPtr();
+    return targetUnit && targetUnit->getRank() == Ranks::None;
+}
+
 bool Game::checkMoveValidation(const std::pair<int, int> &from, const std::pair<int, int> &to,
                                Players currentPlayer) const {
     auto unit = getFieldPtr(from)->getUnitPtr();
+    cout << checkMoveInBounds(to) << checkUnitMoveable(unit) << checkDistanceValidation(from, to) <<
+            checkIsOwnUnit(from, currentPlayer) << !checkTargetFieldObstacle(to) << endl;
+    cout << "Current player: " << toString(currentPlayer) << endl;
+    cout << "Unit owned by " << toString(unit->getPlayer()) << endl;
     return unit && checkMoveInBounds(to) && checkUnitMoveable(unit) && checkDistanceValidation(from, to) &&
-           checkIsOwnUnit(from, currentPlayer);
+           checkIsOwnUnit(from, currentPlayer) && !checkTargetFieldObstacle(to);
 }
