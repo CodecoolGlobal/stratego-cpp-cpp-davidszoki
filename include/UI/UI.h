@@ -38,6 +38,8 @@ public:
 
     void drawUnit(Ranks rank, Players player, int &x, int &y);
 
+    void drawUnit(Ranks rank, Players player, const int &x, const int &y, const int &i);
+
     void drawStartUnits();
 
     void drawBattlefieldUnits();

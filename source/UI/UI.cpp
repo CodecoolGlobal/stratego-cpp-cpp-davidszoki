@@ -244,6 +244,19 @@ void UI::drawUnit(Ranks rank, Players player, int &x, int &y) {
     unitImage.render(renderer, &rect);
 }
 
+void UI::drawUnit(const Ranks rank, const Players player, const int &x, const int &y, const int &i) {
+    Texture unitImage = loadTexture(path + "Units/" + toString(player) + toString(rank) + ".bmp");
+
+    SDL_UnitRect rect(rank, player);
+    rect.h = 70;
+    rect.w = 70;
+    rect.x = x * 80 + 16;
+    rect.y = y * 80 + 16;
+
+    unitImage.render(renderer, &rect);
+    unitRects[i] = rect;
+}
+
 void UI::drawTexture(Texture &texture, SDL_Rect &rect, int width, int height, int x, int y) {
     rect.h = height;
     rect.w = width;
