@@ -16,8 +16,6 @@ public:
 
     virtual void removeUnit(const SDL_Point &field) = 0;
 
-    virtual std::vector<std::vector<std::shared_ptr<Field> > > getUnitPlaceFields(const Players &player) = 0;
-
     virtual bool checkUnitPlaceInBounds(const std::pair<int, int> &to) = 0;
 
     virtual bool checkMoveInBounds(const std::pair<int, int> &to) const = 0;
@@ -41,17 +39,20 @@ public:
     bool getGameEnded() const { return gameEnded; }
     bool getGameStart() const { return gameStart; }
     bool getUnitPlacement() const { return unitPlacement; }
+    bool getBattleStart() const { return battleStart; }
     int getGridSize() const { return gridSize; }
 
     void setCurrentPlayer(const Players &player) { currentPlayer = player; }
     void setGameEnded(const bool &value) { gameEnded = value; }
     void setGameStart(const bool &value) { gameStart = value; }
     void setUnitPlacement(const bool &value) { unitPlacement = value; }
+    void setBattleStart(const bool &value) { battleStart = value; }
 
 protected:
     bool gameEnded = false;
     bool gameStart = false;
     bool unitPlacement = false;
+    bool battleStart = false;
     const int gridSize = 10;
     Players currentPlayer = Players::Red;
     std::vector<std::vector<std::shared_ptr<Field> > > battleField;
