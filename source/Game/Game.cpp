@@ -49,7 +49,8 @@ void Game::run() {
 
 bool Game::checkGameOver(Players currentPlayer) {
     if (gameEnded) return true; // Game already ended
-    return !canPlayerMove(currentPlayer); // Check if the current player can move
+    return !canPlayerMove(currentPlayer == Players::Blue ? Players::Red : Players::Blue);
+    // Check if the current player can move
 }
 
 bool Game::canPlayerMove(Players player) {
