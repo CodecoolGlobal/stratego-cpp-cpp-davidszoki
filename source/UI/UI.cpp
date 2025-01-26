@@ -364,6 +364,11 @@ void UI::handleMouseMotionEvent(const SDL_Event &e, const bool &isDragging) {
     int mouseX = e.motion.x;
     int mouseY = e.motion.y;
 
+    if (isDragging && selectedPlacerRect != nullptr) {
+        selectedPlacerRect->x = mouseX - selectedPlacerRect->w / 2;
+        selectedPlacerRect->y = mouseY - selectedPlacerRect->h / 2;
+    }
+
     if (isDragging && selectedRect != nullptr) {
         selectedRect->x = mouseX - selectedRect->w / 2;
         selectedRect->y = mouseY - selectedRect->h / 2;
