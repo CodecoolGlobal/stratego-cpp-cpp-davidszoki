@@ -48,7 +48,7 @@ public:
 
     void drawPlayerUI();
 
-    void drawMove(const Players &currentPlayer);
+    void drawMove();
 
     void drawHighlight(const SDL_Rect &rect, int thickness = 4);
 
@@ -56,14 +56,15 @@ public:
 
     void drawTexture(Texture &texture, SDL_Rect &rect, int width, int height, int x, int y);
 
-    void handleEvents(bool &gameEnded, bool &gameStart, bool &unitPlacement, Players &currentPlayer,
+    void handleEvents(bool &gameEnded, bool &gameStart,
+                      bool &unitPlacement, Players &currentPlayer,
                       const std::vector<Ranks> &playerUnits);
 
     void handleMouseDownEvent(const SDL_Event &e, bool &gameEnded, bool &gameStart, bool &unitPlacement,
                               Players &currentPlayer, const std::vector<Ranks> &playerUnits, bool &isDragging,
                               SDL_Point &originalPosition);
 
-    void handleMouseUpEvent(const SDL_Event &e, SDL_Point &originalPosition, const Players &currentPlayer);
+    void handleMouseUpEvent(const SDL_Event &e, SDL_Point &originalPosition, Players &currentPlayer);
 
     void handleMouseMotionEvent(const SDL_Event &e, const bool &isDragging);
 

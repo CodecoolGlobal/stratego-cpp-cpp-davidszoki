@@ -462,7 +462,12 @@ SDL_Point UI::snapToGrid(const int mouseX, const int mouseY) const {
     return {snapX, snapY};
 }
 
-void UI::drawMove(const Players &currentPlayer) {
+void UI::drawMove() {
+    if (isDragging && selectedPlacerRect != nullptr) {
+        drawUnit(selectedPlacerRect);
+        drawHighlight(*selectedPlacerRect);
+    }
+
     if (isDragging && selectedRect != nullptr) {
         drawUnit(selectedRect);
         drawHighlight(*selectedRect);
