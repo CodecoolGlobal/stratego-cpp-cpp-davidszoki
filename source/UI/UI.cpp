@@ -18,11 +18,11 @@ SDL_Rect restartButtonRect;
 SDL_Rect nextButtonRect;
 SDL_Rect logoRect;
 vector<SDL_UnitRect> unitPlacerRects;
-vector<SDL_Rect> unitRects;
+vector<SDL_UnitRect> unitRects;
 bool isDragging = false;
 SDL_Point originalPosition;
+SDL_UnitRect *selectedPlacerRect = nullptr;
 SDL_UnitRect *selectedRect = nullptr;
-
 
 UI::UI(IGame &game) : window(nullptr), renderer(nullptr), game(game) {
 }
