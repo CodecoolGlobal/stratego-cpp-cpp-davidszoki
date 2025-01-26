@@ -100,7 +100,7 @@ void Game::printBoard() const {
 }
 
 void Game::placeUnit(const pair<int, int> &to, const Players &player, const Ranks &rank) {
-    const auto unit = make_shared<ArmyUnit>(player, rank);
+    const auto unit = makeUnit(player, rank);
     battleField[to.second][to.first]->setUnit(unit);
 }
 
