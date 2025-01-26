@@ -40,7 +40,7 @@ public:
 
     void drawStartUnits();
 
-    void drawUnits();
+    void drawBattlefieldUnits();
 
     void drawBattlefieldUnits(const Players &currentPlayer);
 

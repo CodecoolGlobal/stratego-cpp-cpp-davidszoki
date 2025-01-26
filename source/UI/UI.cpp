@@ -191,16 +191,14 @@ void UI::drawStartUnits() {
     }
 }
 
-/*void UI::drawUnits() {
-    for (auto &field: game.getBattlefield()) {
-        for (auto &cell: field) {
-            Texture unitImage = loadTexture(
-                path + "Units/" + toString(cell->getUnit()->getPlayer()) + toString(cell->getUnit()->getRank()) +
-                ".bmp");
-            unitImage.render(renderer, &unitRect);
-        }
+void UI::drawBattlefieldUnits() {
+    for (auto &rect: unitRects) {
+        Texture unitImage = loadTexture(
+            path + "Units/" + toString(rect.player) + toString(rect.rank) +
+            ".bmp");
+        unitImage.render(renderer, &rect);
     }
-}*/
+}
 
 void UI::drawStartUnits(const vector<Ranks> &playerUnits, const Players &player) {
     int xPos = 820;
