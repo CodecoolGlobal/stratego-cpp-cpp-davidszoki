@@ -15,7 +15,7 @@ public:
 
     void initializeBoard();
 
-    bool checkGameOver(Players currentPlayer);
+    bool checkGameOver(Players currentPlayer) override;
 
     bool canPlayerMove(Players player);
 
@@ -39,7 +39,7 @@ public:
 
     Field *getFieldPtr(const std::pair<int, int> &field) const;
 
-    bool handleAction(const std::pair<int, int> &from, const std::pair<int, int> &to, Players currentPlayer);
+    bool handleAction(const std::pair<int, int> &from, const std::pair<int, int> &to, Players currentPlayer) override;
 
     void transferUnit(const std::pair<int, int> &from, const std::pair<int, int> &to);
 

@@ -28,7 +28,11 @@ public:
 
     virtual void middleMirrorBattlefield() = 0;
 
+    virtual bool handleAction(const std::pair<int, int> &from, const std::pair<int, int> &to, Players currentPlayer) = 0;
+
     virtual void resetGame() = 0;
+
+    virtual bool checkGameOver(Players currentPlayer) = 0;
 
     std::vector<Players> getPlayers() const { return players; }
     std::vector<Ranks> getPlayerUnits() const { return playerUnits; }
