@@ -15,13 +15,15 @@ public:
 
     void initializeBoard();
 
-    bool checkGameOver(Players currentPlayer);
+    bool checkGameOver(Players currentPlayer) override;
 
     bool canPlayerMove(Players player);
 
     void printBoard() const;
 
     void placeUnit(const std::pair<int, int> &to, const Players &player, const Ranks &rank);
+
+    std::shared_ptr<Unit> makeUnit(const Players &player, const Ranks &rank);
 
     bool checkUnitPlaceInBounds(const std::pair<int, int> &to) override;
 
@@ -37,7 +39,7 @@ public:
 
     Field *getFieldPtr(const std::pair<int, int> &field) const;
 
-    bool handleAction(const std::pair<int, int> &from, const std::pair<int, int> &to, Players currentPlayer);
+    bool handleAction(const std::pair<int, int> &from, const std::pair<int, int> &to, Players currentPlayer) override;
 
     void transferUnit(const std::pair<int, int> &from, const std::pair<int, int> &to);
 
@@ -62,6 +64,8 @@ public:
     bool checkTargetFieldEmpty(const std::pair<int, int> &to) const;
 
     bool checkTargetFieldHasEnemyUnit(const std::pair<int, int> &to, Players player) const;
+
+    bool checkTargetFieldObstacle(const std::pair<int, int> &to) const;
 
     bool checkMoveValidation(const std::pair<int, int> &from, const std::pair<int, int> &to,
                              Players currentPlayer) const;

@@ -11,18 +11,18 @@ using namespace std;
 
 static auto path = (filesystem::current_path().parent_path() / ".." / "resources/").u8string();
 
-SDL_Rect battlefieldRect = {10, 10, 800, 800};
+SDL_Rect battlefieldRect;
 SDL_Rect quitButtonRect;
 SDL_Rect playButtonRect;
 SDL_Rect restartButtonRect;
 SDL_Rect nextButtonRect;
 SDL_Rect logoRect;
 vector<SDL_UnitRect> unitPlacerRects;
-vector<SDL_Rect> unitRects;
+vector<SDL_UnitRect> unitRects;
 bool isDragging = false;
 SDL_Point originalPosition;
+SDL_UnitRect *selectedPlacerRect = nullptr;
 SDL_UnitRect *selectedRect = nullptr;
-
 
 UI::UI(IGame &game) : window(nullptr), renderer(nullptr), game(game) {
 }
@@ -98,22 +98,29 @@ void UI::renderUnitPlacement(const Players &currentPlayer, const vector<Ranks> &
         drawStartUnits(playerUnits, currentPlayer);
 
     if (currentPlayer == Players::Blue)
-        drawBattlefield(currentPlayer);
+        drawBattlefieldUnits(currentPlayer);
 
-    drawMove(currentPlayer);
+    drawMove();
 
     SDL_RenderPresent(renderer);
 }
 
-void UI::drawBattlefield(const Players &currentPlayer) {
+void UI::drawBattlefieldUnits(const Players &currentPlayer) {
+    unitRects.clear();
+    unitRects.resize(game.getGridSize() * game.getGridSize());
     auto battleField = game.getBattlefield();
+    int x = 0;
     for (int i = 0; i < battleField.size(); i++) {
         for (int j = 0; j < battleField[i].size(); j++) {
-            if (battleField[i][j]->getUnit() != nullptr && battleField[i][j]->getUnit()->getRank() != Ranks::None)
+            if (battleField[i][j]->getUnit() != nullptr && battleField[i][j]->getUnit()->getRank() != Ranks::None) {
                 if (battleField[i][j]->getUnit()->getPlayer() == currentPlayer)
-                    drawUnit(battleField[i][j]->getUnit()->getRank(), battleField[i][j]->getUnit()->getPlayer(), j, i);
+                    drawUnit(battleField[i][j]->getUnit()->getRank(), battleField[i][j]->getUnit()->getPlayer(), j,
+                             i, x);
                 else
-                    drawUnit(Ranks::None, battleField[i][j]->getUnit()->getPlayer(), j, i);
+                    drawUnit(Ranks::None, battleField[i][j]->getUnit()->getPlayer(), j,
+                             i, x);
+                x++;
+            }
         }
     }
 }
@@ -123,8 +130,8 @@ void UI::renderBattlefield(const Players &currentPlayer) {
     SDL_RenderClear(renderer);
 
     drawPlayerUI();
-    drawBattlefield(currentPlayer);
-    drawMove(currentPlayer);
+    drawBattlefieldUnits();
+    drawMove();
 
     SDL_RenderPresent(renderer);
 }
@@ -184,16 +191,14 @@ void UI::drawStartUnits() {
     }
 }
 
-/*void UI::drawUnits() {
-    for (auto &field: game.getBattlefield()) {
-        for (auto &cell: field) {
-            Texture unitImage = loadTexture(
-                path + "Units/" + toString(cell->getUnit()->getPlayer()) + toString(cell->getUnit()->getRank()) +
-                ".bmp");
-            unitImage.render(renderer, &unitRect);
-        }
+void UI::drawBattlefieldUnits() {
+    for (auto &rect: unitRects) {
+        Texture unitImage = loadTexture(
+            path + "Units/" + toString(rect.player) + toString(rect.rank) +
+            ".bmp");
+        unitImage.render(renderer, &rect);
     }
-}*/
+}
 
 void UI::drawStartUnits(const vector<Ranks> &playerUnits, const Players &player) {
     int xPos = 820;
@@ -239,6 +244,19 @@ void UI::drawUnit(Ranks rank, Players player, int &x, int &y) {
     unitImage.render(renderer, &rect);
 }
 
+void UI::drawUnit(const Ranks rank, const Players player, const int &x, const int &y, const int &i) {
+    Texture unitImage = loadTexture(path + "Units/" + toString(player) + toString(rank) + ".bmp");
+
+    SDL_UnitRect rect(rank, player);
+    rect.h = 70;
+    rect.w = 70;
+    rect.x = x * 80 + 16;
+    rect.y = y * 80 + 16;
+
+    unitImage.render(renderer, &rect);
+    unitRects[i] = rect;
+}
+
 void UI::drawTexture(Texture &texture, SDL_Rect &rect, int width, int height, int x, int y) {
     rect.h = height;
     rect.w = width;
@@ -254,7 +272,8 @@ bool isMouseInsideRect(int mouseX, int mouseY, SDL_Rect &rect) {
             mouseY < rect.y + rect.h);
 }
 
-void UI::handleEvents(bool &gameEnded, bool &gameStart, bool &unitPlacement, Players &currentPlayer,
+void UI::handleEvents(bool &gameEnded, bool &gameStart, bool &unitPlacement,
+                      Players &currentPlayer,
                       const vector<Ranks> &playerUnits) {
     SDL_Event e;
 
@@ -282,7 +301,6 @@ void UI::handleEvents(bool &gameEnded, bool &gameStart, bool &unitPlacement, Pla
     }
 }
 
-
 void UI::handleMouseDownEvent(const SDL_Event &e, bool &gameEnded, bool &gameStart, bool &unitPlacement,
                               Players &currentPlayer, const vector<Ranks> &playerUnits, bool &isDragging,
                               SDL_Point &originalPosition) {
@@ -303,7 +321,10 @@ void UI::handleMouseDownEvent(const SDL_Event &e, bool &gameEnded, bool &gameSta
         Players::Blue) {
         game.changePlayer(currentPlayer);
         game.middleMirrorBattlefield();
+        drawBattlefieldUnits(currentPlayer);
         unitPlacement = true;
+        game.setBattleStart(true);
+        unitPlacerRects.clear();
         return;
     }
 
@@ -318,19 +339,35 @@ void UI::handleMouseDownEvent(const SDL_Event &e, bool &gameEnded, bool &gameSta
         return;
     }
 
-    for (auto &unitRect: unitPlacerRects) {
-        if (isMouseInsideRect(mouseX, mouseY, unitRect)) {
-            isDragging = true;
-            selectedRect = &unitRect;
-            originalPosition = {selectedRect->x, selectedRect->y};
-            break;
+    if (!unitPlacerRects.empty())
+        for (auto &unitPlacerRect: unitPlacerRects) {
+            if (isMouseInsideRect(mouseX, mouseY, unitPlacerRect)) {
+                isDragging = true;
+                selectedPlacerRect = &unitPlacerRect;
+                originalPosition = {selectedPlacerRect->x, selectedPlacerRect->y};
+                break;
+            }
         }
-    }
+
+    if (!unitRects.empty())
+        for (auto &unitRect: unitRects) {
+            if (isMouseInsideRect(mouseX, mouseY, unitRect)) {
+                isDragging = true;
+                selectedRect = &unitRect;
+                originalPosition = {selectedRect->x, selectedRect->y};
+                break;
+            }
+        }
 }
 
 void UI::handleMouseMotionEvent(const SDL_Event &e, const bool &isDragging) {
     int mouseX = e.motion.x;
     int mouseY = e.motion.y;
+
+    if (isDragging && selectedPlacerRect != nullptr) {
+        selectedPlacerRect->x = mouseX - selectedPlacerRect->w / 2;
+        selectedPlacerRect->y = mouseY - selectedPlacerRect->h / 2;
+    }
 
     if (isDragging && selectedRect != nullptr) {
         selectedRect->x = mouseX - selectedRect->w / 2;
@@ -338,7 +375,8 @@ void UI::handleMouseMotionEvent(const SDL_Event &e, const bool &isDragging) {
     }
 }
 
-void UI::handleMouseUpEvent(const SDL_Event &e, SDL_Point &originalPosition, const Players &currentPlayer) {
+void UI::handleMouseUpEvent(const SDL_Event &e, SDL_Point &originalPosition,
+                            Players &currentPlayer) {
     int mouseX = e.button.x;
     int mouseY = e.button.y;
     int flooredX = 0;
@@ -346,24 +384,53 @@ void UI::handleMouseUpEvent(const SDL_Event &e, SDL_Point &originalPosition, con
 
     auto snappedPosition = snapToGrid(mouseX, mouseY);
 
-    if (currentPlayer == Players::Blue) {
-        flooredX = (snappedPosition.x + 10) / 80;
-        flooredY = snappedPosition.y - 490 < 0 ? -1 : (snappedPosition.y + 10) / 80;
+    if (!game.getUnitPlacement()) {
+        if (currentPlayer == Players::Blue) {
+            flooredX = (snappedPosition.x + 10) / 80;
+            flooredY = snappedPosition.y - 490 < 0 ? -1 : (snappedPosition.y + 10) / 80;
+        } else {
+            flooredX = battlefieldRect.w / 80 - 1 - (snappedPosition.x + 10) / 80;
+            flooredY = snappedPosition.y - 490 < 0 ? -1 : battlefieldRect.h / 80 - 1 - (snappedPosition.y + 10) / 80;
+        }
     } else {
-        flooredX = battlefieldRect.w / 80 - 1 - (snappedPosition.x + 10) / 80;
-        flooredY = snappedPosition.y - 490 < 0 ? -1 : battlefieldRect.h / 80 - 1 - (snappedPosition.y + 10) / 80;
+        flooredX = (snappedPosition.x + 10) / 80;
+        flooredY = snappedPosition.y < 0 ? -1 : (snappedPosition.y + 10) / 80;
     }
 
-    if (selectedRect != nullptr) {
+    if (selectedPlacerRect != nullptr) {
         //cout << game.checkUnitPlaceInBounds({flooredX, flooredY}) << endl;
         if (game.checkMoveInBounds({flooredX, flooredY}) && game.checkTargetFieldEmpty({flooredX, flooredY})) {
-            selectedRect->x = snappedPosition.x;
-            selectedRect->y = snappedPosition.y;
+            selectedPlacerRect->x = snappedPosition.x;
+            selectedPlacerRect->y = snappedPosition.y;
             auto pos = calculateGridPosition(originalPosition, currentPlayer);
             if (game.checkMoveInBounds({pos.x, pos.y}) && !game.checkTargetFieldEmpty({pos.x, pos.y})) {
                 game.removeUnit(pos);
             }
-            game.placeUnit({flooredX, flooredY}, selectedRect->player, selectedRect->rank);
+            game.placeUnit({flooredX, flooredY}, selectedPlacerRect->player, selectedPlacerRect->rank);
+        } else {
+            selectedPlacerRect->x = originalPosition.x;
+            selectedPlacerRect->y = originalPosition.y;
+        }
+        isDragging = false;
+        selectedPlacerRect = nullptr;
+        originalPosition = {0, 0};
+    }
+
+    if (selectedRect != nullptr) {
+        auto from = calculateGridPosition(originalPosition, currentPlayer);
+        cout << "FROM X: " << from.x << " FROM Y: " << from.y << endl;
+        auto to = calculateGridPosition(snappedPosition, currentPlayer);
+        cout << "TO X: " << flooredX << " TO Y: " << flooredY << endl;
+        if (game.handleAction({from.x, from.y}, {flooredX, flooredY},
+                              currentPlayer)) {
+            selectedRect->x = snappedPosition.x;
+            selectedRect->y = snappedPosition.y;
+            if (game.checkGameOver(currentPlayer))
+                game.setGameEnded(true);
+            game.changePlayer(currentPlayer);
+            game.middleMirrorBattlefield();
+            SDL_Delay(300);
+            drawBattlefieldUnits(currentPlayer);
         } else {
             selectedRect->x = originalPosition.x;
             selectedRect->y = originalPosition.y;
@@ -375,25 +442,32 @@ void UI::handleMouseUpEvent(const SDL_Event &e, SDL_Point &originalPosition, con
 }
 
 SDL_Point UI::calculateGridPosition(const SDL_Point &position, const Players &currentPlayer) const {
-    if (currentPlayer == Players::Blue)
+    if (!game.getUnitPlacement())
         return {
-            (position.x / (battlefieldRect.w / 10) * (battlefieldRect.w / 10) + 16) / 80,
-            (position.y / (battlefieldRect.h / 10) * (battlefieldRect.h / 10) + 16) / 80
+            battlefieldRect.w / 80 - 1 - (position.x + 10) / 80,
+            position.y - 490 < 0 ? -1 : battlefieldRect.h / 80 - 1 - (position.y + 10) / 80
         };
-
     return {
-        battlefieldRect.w / 80 - 1 - (originalPosition.x + 10) / 80,
-        originalPosition.y - 490 < 0 ? -1 : battlefieldRect.h / 80 - 1 - (originalPosition.y + 10) / 80
+        (position.x / (battlefieldRect.w / 10) * (battlefieldRect.w / 10) + 16) / 80,
+        (position.y / (battlefieldRect.h / 10) * (battlefieldRect.h / 10) + 16) / 80
     };
 }
 
+
 SDL_Point UI::snapToGrid(const int mouseX, const int mouseY) const {
-    const int snapX = mouseX / (battlefieldRect.w / game.getGridSize()) * (battlefieldRect.w / game.getGridSize()) + 16;
-    const int snapY = mouseY / (battlefieldRect.h / game.getGridSize()) * (battlefieldRect.h / game.getGridSize()) + 16;
+    const int snapX = mouseX / (battlefieldRect.w / game.getGridSize()) * (battlefieldRect.w / game.getGridSize()) +
+                      16;
+    const int snapY = mouseY / (battlefieldRect.h / game.getGridSize()) * (battlefieldRect.h / game.getGridSize()) +
+                      16;
     return {snapX, snapY};
 }
 
-void UI::drawMove(const Players &currentPlayer) {
+void UI::drawMove() {
+    if (isDragging && selectedPlacerRect != nullptr) {
+        drawUnit(selectedPlacerRect);
+        drawHighlight(*selectedPlacerRect);
+    }
+
     if (isDragging && selectedRect != nullptr) {
         drawUnit(selectedRect);
         drawHighlight(*selectedRect);
