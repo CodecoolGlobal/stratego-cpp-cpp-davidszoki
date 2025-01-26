@@ -223,7 +223,7 @@ void Game::handleCapture(const std::pair<int, int> &from, const std::pair<int, i
 
     if (toUnit && toUnit->getRank() == Ranks::Flag) {
         gameEnded = true;
-        cout << (fromUnit->getPlayer() == Players::Red ? "Blue" : "Red") << " wins by capturing the flag!" << endl;
+        cout << toString(currentPlayer) << " wins by capturing the flag!" << endl;
     }
 
     if (checkSpecialCaptureRules(fromUnit, toUnit, from, to)) return;
