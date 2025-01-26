@@ -269,7 +269,7 @@ void Game::executeStandardCapture(Unit *fromUnit, Unit *toUnit, const std::pair<
         cout << "Attacking unit was defeated!" << endl;
     } else {
         transferUnit(from, to);
-        cout << "Capture successful!" << endl;
+        cout << "Capture successful by: " << currentPlayer << endl;
     }
 }
 
