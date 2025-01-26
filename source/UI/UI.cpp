@@ -98,22 +98,29 @@ void UI::renderUnitPlacement(const Players &currentPlayer, const vector<Ranks> &
         drawStartUnits(playerUnits, currentPlayer);
 
     if (currentPlayer == Players::Blue)
-        drawBattlefield(currentPlayer);
+        drawBattlefieldUnits(currentPlayer);
 
-    drawMove(currentPlayer);
+    drawMove();
 
     SDL_RenderPresent(renderer);
 }
 
-void UI::drawBattlefield(const Players &currentPlayer) {
+void UI::drawBattlefieldUnits(const Players &currentPlayer) {
+    unitRects.clear();
+    unitRects.resize(game.getGridSize() * game.getGridSize());
     auto battleField = game.getBattlefield();
+    int x = 0;
     for (int i = 0; i < battleField.size(); i++) {
         for (int j = 0; j < battleField[i].size(); j++) {
-            if (battleField[i][j]->getUnit() != nullptr && battleField[i][j]->getUnit()->getRank() != Ranks::None)
+            if (battleField[i][j]->getUnit() != nullptr && battleField[i][j]->getUnit()->getRank() != Ranks::None) {
                 if (battleField[i][j]->getUnit()->getPlayer() == currentPlayer)
-                    drawUnit(battleField[i][j]->getUnit()->getRank(), battleField[i][j]->getUnit()->getPlayer(), j, i);
+                    drawUnit(battleField[i][j]->getUnit()->getRank(), battleField[i][j]->getUnit()->getPlayer(), j,
+                             i, x);
                 else
-                    drawUnit(Ranks::None, battleField[i][j]->getUnit()->getPlayer(), j, i);
+                    drawUnit(Ranks::None, battleField[i][j]->getUnit()->getPlayer(), j,
+                             i, x);
+                x++;
+            }
         }
     }
 }
@@ -123,8 +130,8 @@ void UI::renderBattlefield(const Players &currentPlayer) {
     SDL_RenderClear(renderer);
 
     drawPlayerUI();
-    drawBattlefield(currentPlayer);
-    drawMove(currentPlayer);
+    drawBattlefieldUnits();
+    drawMove();
 
     SDL_RenderPresent(renderer);
 }

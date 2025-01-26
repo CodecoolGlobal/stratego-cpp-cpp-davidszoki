@@ -42,7 +42,7 @@ public:
 
     void drawUnits();
 
-    void drawBattlefield(const Players &currentPlayer);
+    void drawBattlefieldUnits(const Players &currentPlayer);
 
     void drawPlayerUI();
 
