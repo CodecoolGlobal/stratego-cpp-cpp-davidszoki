@@ -23,6 +23,8 @@ public:
 
     void placeUnit(const std::pair<int, int> &to, const Players &player, const Ranks &rank);
 
+    std::shared_ptr<Unit> makeUnit(const Players &player, const Ranks &rank);
+
     bool checkUnitPlaceInBounds(const std::pair<int, int> &to) override;
 
     void removeUnit(const std::pair<int, int> &field) override;

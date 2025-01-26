@@ -8,6 +8,7 @@
 #include <ArmyUnit.h>
 #include <Obstacle.h>
 #include <Bomb.h>
+#include <Scout.h>
 #include <Marshal.h>
 #include <Miner.h>
 #include <Spy.h>
@@ -101,6 +102,34 @@ void Game::printBoard() const {
 void Game::placeUnit(const pair<int, int> &to, const Players &player, const Ranks &rank) {
     const auto unit = make_shared<ArmyUnit>(player, rank);
     battleField[to.second][to.first]->setUnit(unit);
+}
+
+shared_ptr<Unit> Game::makeUnit(const Players &player, const Ranks &rank) {
+    switch (rank) {
+        case Ranks::Flag:
+            return make_shared<Flag>(player);
+        case Ranks::Spy:
+            return make_shared<Spy>(player);
+        case Ranks::Scout:
+            return make_shared<Scout>(player);
+        case Ranks::Miner:
+            return make_shared<Miner>(player);
+        case Ranks::Sergeant:
+        case Ranks::Lieutenant:
+        case Ranks::Captain:
+        case Ranks::Major:
+        case Ranks::Colonel:
+        case Ranks::General:
+            return std::make_shared<ArmyUnit>(player, rank);
+        case Ranks::Marshal:
+            return make_shared<Marshal>(player);
+        case Ranks::Bomb:
+            return make_shared<Bomb>(player);
+        case Ranks::None:
+            return make_shared<Obstacle>();
+        default:
+            nullptr;
+    }
 }
 
 bool Game::checkUnitPlaceInBounds(const pair<int, int> &to) {
