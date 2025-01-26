@@ -455,8 +455,10 @@ SDL_Point UI::calculateGridPosition(const SDL_Point &position, const Players &cu
 
 
 SDL_Point UI::snapToGrid(const int mouseX, const int mouseY) const {
-    const int snapX = mouseX / (battlefieldRect.w / game.getGridSize()) * (battlefieldRect.w / game.getGridSize()) + 16;
-    const int snapY = mouseY / (battlefieldRect.h / game.getGridSize()) * (battlefieldRect.h / game.getGridSize()) + 16;
+    const int snapX = mouseX / (battlefieldRect.w / game.getGridSize()) * (battlefieldRect.w / game.getGridSize()) +
+                      16;
+    const int snapY = mouseY / (battlefieldRect.h / game.getGridSize()) * (battlefieldRect.h / game.getGridSize()) +
+                      16;
     return {snapX, snapY};
 }
 
