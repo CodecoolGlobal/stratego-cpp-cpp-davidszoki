@@ -11,7 +11,7 @@ using namespace std;
 
 static auto path = (filesystem::current_path().parent_path() / ".." / "resources/").u8string();
 
-SDL_Rect battlefieldRect = {10, 10, 800, 800};
+SDL_Rect battlefieldRect;
 SDL_Rect quitButtonRect;
 SDL_Rect playButtonRect;
 SDL_Rect restartButtonRect;
@@ -272,7 +272,8 @@ bool isMouseInsideRect(int mouseX, int mouseY, SDL_Rect &rect) {
             mouseY < rect.y + rect.h);
 }
 
-void UI::handleEvents(bool &gameEnded, bool &gameStart, bool &unitPlacement, Players &currentPlayer,
+void UI::handleEvents(bool &gameEnded, bool &gameStart, bool &unitPlacement,
+                      Players &currentPlayer,
                       const vector<Ranks> &playerUnits) {
     SDL_Event e;
 
@@ -300,7 +301,6 @@ void UI::handleEvents(bool &gameEnded, bool &gameStart, bool &unitPlacement, Pla
     }
 }
 
-
 void UI::handleMouseDownEvent(const SDL_Event &e, bool &gameEnded, bool &gameStart, bool &unitPlacement,
                               Players &currentPlayer, const vector<Ranks> &playerUnits, bool &isDragging,
                               SDL_Point &originalPosition) {
@@ -321,7 +321,10 @@ void UI::handleMouseDownEvent(const SDL_Event &e, bool &gameEnded, bool &gameSta
         Players::Blue) {
         game.changePlayer(currentPlayer);
         game.middleMirrorBattlefield();
+        drawBattlefieldUnits(currentPlayer);
         unitPlacement = true;
+        game.setBattleStart(true);
+        unitPlacerRects.clear();
         return;
     }
 
@@ -336,14 +339,25 @@ void UI::handleMouseDownEvent(const SDL_Event &e, bool &gameEnded, bool &gameSta
         return;
     }
 
-    for (auto &unitRect: unitPlacerRects) {
-        if (isMouseInsideRect(mouseX, mouseY, unitRect)) {
-            isDragging = true;
-            selectedRect = &unitRect;
-            originalPosition = {selectedRect->x, selectedRect->y};
-            break;
+    if (!unitPlacerRects.empty())
+        for (auto &unitPlacerRect: unitPlacerRects) {
+            if (isMouseInsideRect(mouseX, mouseY, unitPlacerRect)) {
+                isDragging = true;
+                selectedPlacerRect = &unitPlacerRect;
+                originalPosition = {selectedPlacerRect->x, selectedPlacerRect->y};
+                break;
+            }
         }
-    }
+
+    if (!unitRects.empty())
+        for (auto &unitRect: unitRects) {
+            if (isMouseInsideRect(mouseX, mouseY, unitRect)) {
+                isDragging = true;
+                selectedRect = &unitRect;
+                originalPosition = {selectedRect->x, selectedRect->y};
+                break;
+            }
+        }
 }
 
 void UI::handleMouseMotionEvent(const SDL_Event &e, const bool &isDragging) {
